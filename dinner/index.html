@@ -8,180 +8,157 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap');
 
   :root {
-    --cream: #FFF8E7; --cream-dark: #FFF3D6; --cream-card: #FFFBF2;
-    --gold: #C8963E; --gold-light: #F5DEB3; --gold-soft: #FAEBD7;
-    --gold-dark: #8B6914; --warm: #5C3D1E; --warm-dark: #3E2723;
-    --green: #1B7A4A; --green-light: #E8F5E9; --green-dark: #145A32;
-    --white: #FFFBF2; --text: #3E2723; --text-muted: #8D6E63;
-    --border: rgba(200,150,62,0.15); --border-gold: rgba(200,150,62,0.3);
-    --success: #2E7D32; --danger: #C62828;
-    --card-bg: rgba(255,251,242,0.9);
+    --bg: #FFFDF5;
+    --card: #FFFFFF;
+    --green: #0D6E6E; --green-dark: #0A5555; --green-light: #E6F2F2;
+    --gold: #B8860B; --gold-light: #F5DEB3; --gold-dark: #8B6508;
+    --text: #1A1A1A; --text-muted: #6B5B4F;
+    --border: #E8E0D5; --border-gold: #D4C5A0;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --shadow-hover: 0 4px 24px rgba(0,0,0,0.1);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
-
   body {
     font-family:'Plus Jakarta Sans',sans-serif;
-    background:var(--cream); color:var(--text);
+    background:var(--bg); color:var(--text);
     overflow-x:hidden; -webkit-tap-highlight-color:transparent;
   }
 
-  @keyframes bgPulse {
-    0%,100%{opacity:0.3} 50%{opacity:0.6}
-  }
-  .bg-orb {
-    position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;
-  }
-  .bg-orb-1{width:500px;height:500px;background:rgba(200,150,62,0.08);top:-120px;left:-100px;animation:bgPulse 10s ease-in-out infinite}
-  .bg-orb-2{width:400px;height:400px;background:rgba(27,122,74,0.04);bottom:-100px;right:-80px;animation:bgPulse 12s ease-in-out infinite reverse}
-  .bg-pattern{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(200,150,62,0.04) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(27,122,74,0.03) 0%, transparent 50%);
-  }
-
   .container{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 20px}
-  .gold-text{background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .divider{display:flex;align-items:center;gap:12px;margin:28px 0;color:var(--gold);font-size:0.5rem;opacity:0.4}
+  .sec-head{text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--green-dark);margin:8px 0 20px}
+  .divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--gold);font-size:0.5rem;opacity:0.5}
   .divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
-  .sec-head{text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);margin:8px 0 20px;letter-spacing:2px}
+  .gold-text{color:var(--gold);font-weight:600}
 
-  /* ─── COVER ─── */
+  /* COVER */
   .cover{
     position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;background:linear-gradient(160deg,var(--warm-dark) 0%,#5C3D1E 50%,var(--warm-dark) 100%);
-    transition:transform 0.9s cubic-bezier(0.7,0,0.3,1),opacity 0.9s;
+    align-items:center;justify-content:center;
+    background:linear-gradient(160deg,var(--green-dark) 0%,#063838 50%,var(--green-dark) 100%);
+    transition:transform 0.8s cubic-bezier(0.7,0,0.3,1),opacity 0.8s;
   }
   .cover.revealed{transform:translateY(-100%);opacity:0;pointer-events:none}
-  .cover-logo{font-size:48px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
+  .cover-logo{font-size:64px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .cover-company{font-size:0.75rem;letter-spacing:8px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;font-weight:500}
-  .cover-title{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--gold-light);text-align:center;line-height:1.2;margin-bottom:8px}
-  .cover-sub{font-size:0.85rem;color:var(--text-muted);text-align:center;max-width:320px;margin-bottom:40px;line-height:1.6}
+  .cover-company{font-size:0.7rem;letter-spacing:8px;text-transform:uppercase;color:var(--gold-light);margin-bottom:24px;font-weight:500}
+  .cover-title{font-family:'Playfair Display',serif;font-size:2.6rem;color:#FFFFFF;text-align:center;line-height:1.2;margin-bottom:8px}
+  .cover-sub{font-size:0.85rem;color:rgba(255,255,255,0.7);text-align:center;max-width:320px;margin-bottom:40px;line-height:1.6}
   .btn-reveal{
     background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-    border:none;color:var(--white);padding:16px 48px;font-size:1rem;
+    border:none;color:#fff;padding:16px 48px;font-size:1rem;
     font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
     border-radius:60px;cursor:pointer;letter-spacing:2px;
     text-transform:uppercase;transition:all 0.3s;
-    box-shadow:0 4px 24px rgba(200,150,62,0.4);
+    box-shadow:0 4px 24px rgba(184,134,11,0.4);
   }
-  .btn-reveal:hover{transform:scale(1.03);box-shadow:0 8px 32px rgba(201,168,76,0.4)}
+  .btn-reveal:hover{transform:scale(1.03)}
   .btn-reveal:active{transform:scale(0.96)}
 
-  /* ─── HERO ─── */
+  /* HERO */
   .hero{text-align:center;padding:60px 0 30px}
   .hero-company{font-size:0.7rem;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
-  .hero-title{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--gold-light);line-height:1.15;margin-bottom:16px}
+  .hero-title{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--green-dark);line-height:1.15;margin-bottom:16px}
   .hero-msg{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text-muted);font-style:italic;line-height:1.7;max-width:400px;margin:0 auto}
 
-  /* ─── EVENT CARD ─── */
+  /* EVENT CARD */
   .event-card{
-    background:var(--card-bg);backdrop-filter:blur(24px);
-    border:1px solid var(--border);border-radius:20px;padding:32px 28px;
-    margin:20px 0;position:relative;overflow:hidden;
-    box-shadow:0 4px 32px rgba(0,0,0,0.2);
+    background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;
+    margin:16px 0;box-shadow:var(--shadow);
   }
-  .event-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.5}
-  .event-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .event-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #f0ebe0}
   .event-row:last-child{border-bottom:none}
   .event-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
-  .event-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:2px}
+  .event-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:2px;font-weight:600}
   .event-value{font-size:0.95rem;color:var(--text);font-weight:500}
 
-  /* ─── PRICE CARDS ─── */
-  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+  /* PRICE CARDS */
+  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
   .price-card{
-    background:var(--card-bg);backdrop-filter:blur(24px);
-    border:1px solid var(--border);border-radius:16px;padding:24px 20px;
-    text-align:center;cursor:pointer;transition:all 0.3s;
-    position:relative;overflow:hidden;
+    background:var(--card);border:2px solid var(--border);border-radius:14px;padding:20px 16px;
+    text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow);
   }
-  .price-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-  .price-card.selected{border-color:var(--gold);background:rgba(201,168,76,0.08);box-shadow:0 0 0 2px rgba(201,168,76,0.3)}
-  .price-card .label{font-size:0.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--text-muted);margin-bottom:8px}
-  .price-card .amount{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold-light);font-weight:700}
-  .price-card .desc{font-size:0.75rem;color:var(--text-muted);margin-top:4px}
+  .price-card:hover{border-color:var(--gold)}
+  .price-card.selected{border-color:var(--green);background:var(--green-light);box-shadow:0 0 0 3px rgba(13,110,110,0.15)}
+  .price-card .label{font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
+  .price-card .amount{font-family:'Playfair Display',serif;font-size:2rem;color:var(--green-dark);font-weight:700}
+  .price-card .desc{font-size:0.7rem;color:var(--text-muted);margin-top:2px}
 
-  /* ─── FORM ─── */
-  .form-group{margin-bottom:16px}
-  .form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
-  .form-label .req{color:var(--danger)}
+  /* FORM */
+  .form-group{margin-bottom:14px}
+  .form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text);margin-bottom:6px}
+  .form-label .req{color:#C62828}
   .form-input,.form-select,.form-textarea{
-    width:100%;padding:14px 18px;background:var(--white);
-    border:1.5px solid var(--border);border-radius:12px;
+    width:100%;padding:13px 16px;background:var(--bg);
+    border:1.5px solid var(--border);border-radius:10px;
     font-size:0.9rem;font-family:inherit;color:var(--text);
-    transition:all 0.3s;outline:none;
+    transition:all 0.2s;outline:none;
   }
-  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(13,110,110,0.08)}
   .form-textarea{min-height:70px;resize:vertical}
-  .form-select option{background:var(--cream-dark);color:var(--text)}
 
   .btn-submit{
-    width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-    color:var(--warm);border:none;border-radius:14px;
+    width:100%;padding:16px;background:linear-gradient(135deg,var(--green),var(--green-dark));
+    color:#fff;border:none;border-radius:12px;
     font-size:1rem;font-family:inherit;font-weight:700;
-    letter-spacing:2px;text-transform:uppercase;cursor:pointer;
-    box-shadow:0 4px 24px rgba(201,168,76,0.25);transition:all 0.3s;
+    letter-spacing:1px;cursor:pointer;
+    box-shadow:0 4px 20px rgba(13,110,110,0.2);transition:all 0.2s;
   }
-  .btn-submit:hover{transform:scale(1.01);box-shadow:0 8px 32px rgba(201,168,76,0.35)}
-  .btn-submit:disabled{opacity:0.4;transform:none;cursor:not-allowed}
-  .btn-submit:active{transform:scale(0.97)}
+  .btn-submit:hover{transform:scale(1.01)}
+  .btn-submit:disabled{opacity:0.5;transform:none;cursor:not-allowed}
 
-  /* ─── RSVP SECTION ─── */
-  .rsvp-section{background:var(--card-bg);backdrop-filter:blur(24px);border:1px solid var(--border-gold);border-radius:20px;padding:36px 28px;margin:28px 0}
-  .rsvp-title{text-align:center;font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold-light);margin-bottom:4px}
-  .rsvp-sub{text-align:center;font-size:0.8rem;color:var(--text-muted);margin-bottom:28px}
-  .rsvp-done{display:none;text-align:center;padding:20px 0}
-  .rsvp-done .icon{font-size:56px;margin-bottom:12px}
-  .rsvp-done h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold-light)}
-  .rsvp-done p{font-size:0.85rem;color:var(--text-muted);margin-top:6px}
-  .rsvp-done .checkout{margin-top:16px}
+  /* RSVP */
+  .rsvp-section{
+    background:var(--card);border:2px solid var(--border-gold);border-radius:16px;
+    padding:32px 24px;margin:24px 0;box-shadow:var(--shadow);
+  }
+  .rsvp-title{text-align:center;font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--green-dark);margin-bottom:4px}
+  .rsvp-sub{text-align:center;font-size:0.8rem;color:var(--text-muted);margin-bottom:24px}
+  .rsvp-done{display:none;text-align:center;padding:16px 0}
+  .rsvp-done .icon{font-size:52px;margin-bottom:12px}
+  .rsvp-done h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--green-dark)}
+  .rsvp-done p{font-size:0.85rem;color:var(--text-muted);margin-top:4px}
+  .rsvp-done .checkout{margin-top:14px}
   .rsvp-done .checkout a{
-    display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-    color:var(--warm);padding:14px 32px;border-radius:12px;text-decoration:none;
-    font-weight:700;letter-spacing:1px;transition:transform 0.2s;
+    display:inline-block;background:var(--green);color:#fff;padding:12px 28px;
+    border-radius:10px;text-decoration:none;font-weight:700;transition:transform 0.2s;
   }
   .rsvp-done .checkout a:hover{transform:scale(1.03)}
 
   .total-box{
-    background:rgba(200,150,62,0.12);border:1px solid var(--border-gold);
-    border-radius:12px;padding:14px 18px;margin-top:16px;
+    background:var(--green-light);border:1px solid rgba(13,110,110,0.2);
+    border-radius:10px;padding:12px 16px;margin-top:14px;
     display:flex;justify-content:space-between;align-items:center;
   }
-  .total-box .label{font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px}
-  .total-box .amount{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold-light);font-weight:700}
+  .total-box .label{font-size:0.8rem;color:var(--green-dark);font-weight:600}
+  .total-box .amount{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--green-dark);font-weight:700}
 
-  /* ─── MAP ─── */
-  .map-wrap{border-radius:16px;overflow:hidden;margin:20px 0;border:1px solid var(--border)}
-  .map-wrap iframe{width:100%;height:240px;border:none;display:block}
+  /* MAP */
+  .map-wrap{border-radius:14px;overflow:hidden;margin:16px 0;box-shadow:var(--shadow)}
+  .map-wrap iframe{width:100%;height:220px;border:none;display:block}
 
-  /* ─── GALLERY ─── */
-  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:20px 0}
-  .gallery-item{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--cream-dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+  /* GALLERY */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}
+  .gallery-item{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
   .gallery-item img{width:100%;height:100%;object-fit:cover}
-  .gallery-placeholder{font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-align:center;opacity:0.4}
+  .gallery-placeholder{font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-align:center;opacity:0.4}
 
-  /* ─── FOOTER ─── */
-  .footer{text-align:center;padding:48px 0 36px;color:var(--text-muted);font-size:0.8rem;line-height:2.2}
-  .footer-brand{font-size:1.2rem;color:var(--gold);font-family:'Playfair Display',serif}
+  /* FOOTER */
+  .footer{text-align:center;padding:40px 0 32px;color:var(--text-muted);font-size:0.8rem;line-height:2.2}
+  .footer-brand{font-size:1.1rem;color:var(--green-dark);font-family:'Playfair Display',serif;font-weight:600}
 
-  /* ─── TOAST ─── */
-  .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:var(--warm-dark);color:var(--gold-light);padding:12px 28px;border-radius:60px;font-size:0.8rem;z-index:1001;opacity:0;pointer-events:none;transition:opacity 0.3s;border:1px solid var(--border-gold);font-weight:500}
+  /* TOAST */
+  .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 24px;border-radius:60px;font-size:0.8rem;z-index:1001;opacity:0;pointer-events:none;transition:opacity 0.3s;font-weight:500}
   .toast.show{opacity:1}
 
   @media(max-width:480px){
-    .cover-title{font-size:2rem}
-    .hero-title{font-size:1.8rem}
+    .cover-title{font-size:1.8rem}
+    .hero-title{font-size:1.6rem}
     .price-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
 <body>
-
-<div class="bg-orb bg-orb-1"></div>
-<div class="bg-orb bg-orb-2"></div>
-<div class="bg-pattern"></div>
 
 <!-- COVER -->
 <div class="cover" id="cover">
@@ -262,7 +239,7 @@
         </select>
       </div>
       <div class="form-group" id="pax-group" style="display:none">
-        <label class="form-label">Bilangan Pax <span class="req">*</span></label>
+        <label class="form-label">Bilangan Pax</label>
         <select class="form-select" id="rsvp-pax" onchange="calcTotal()">
           <option value="1">1 orang — RM<span class="pax-price">220</span></option>
           <option value="2">2 orang — RM<span class="pax-price-2">440</span></option>
@@ -270,8 +247,6 @@
           <option value="4">4 orang — RM<span class="pax-price-4">880</span></option>
         </select>
       </div>
-
-      <!-- Accommodation -->
       <div class="form-group" id="acco-group" style="display:none">
         <label class="form-label">Penginapan (Optional)</label>
         <select class="form-select" id="rsvp-acco" onchange="calcTotal()">
@@ -279,18 +254,14 @@
           <option value="1">1 bilik (+RM<span id="acco-price">450</span>)</option>
         </select>
       </div>
-
-      <!-- Total -->
       <div class="total-box" id="total-box" style="display:none">
         <span class="label">Jumlah</span>
         <span class="amount" id="total-amount">RM 0.00</span>
       </div>
-
       <div class="form-group">
         <label class="form-label">Ucapan / Nota</label>
         <textarea class="form-textarea" id="rsvp-message" placeholder="Tinggalkan ucapan atau keperluan khas..."></textarea>
       </div>
-
       <button type="submit" class="btn-submit" id="submitBtn">📨 Hantar RSVP & Bayar</button>
     </form>
 
@@ -305,11 +276,10 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-brand" id="footer-brand">Syarikat ABC Sdn Bhd</div>
     <p id="footer-text">Terima kasih kerana sudi hadir memeriahkan majlis kami.</p>
-    <small>Sebarang pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--gold)" id="contact-wa" href="#">WhatsApp</a></small>
+    <small>Sebarang pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--green)" id="contact-wa" href="#">WhatsApp</a></small>
   </footer>
 </div>
 
@@ -322,94 +292,54 @@ const SECRET = 'rsvp2026';
 let cfg = {};
 let pricePax = 220, priceAcco = 450;
 
-// ─── LOAD CONFIG ───
 async function loadConfig(){
-  try{
-    const res=await fetch(API_CONFIG),j=await res.json();
-    cfg=j.config||{};
-    applyConfig();
-  }catch(e){console.warn('Config fallback')}
+  try{const res=await fetch(API_CONFIG),j=await res.json();cfg=j.config||{};applyConfig()}catch(e){}
 }
-
 function applyConfig(){
   if(!Object.keys(cfg).length)return;
-
   document.title=cfg.page_title||document.title;
-
-  // Cover
-  if(cfg.company_name)document.getElementById('cover-company').textContent=cfg.company_name;
-  if(cfg.event_title)document.getElementById('cover-title').innerHTML=cfg.event_title.replace(/\n/g,'<br>');
+  if(cfg.company_name){document.getElementById('cover-company').textContent=cfg.company_name;document.getElementById('hero-company').textContent=cfg.company_name}
+  if(cfg.event_title){document.getElementById('cover-title').innerHTML=cfg.event_title;document.getElementById('hero-title').textContent=cfg.event_title}
   if(cfg.event_subtitle)document.getElementById('cover-sub').textContent=cfg.event_subtitle;
-
-  // Hero
-  if(cfg.company_name)document.getElementById('hero-company').textContent=cfg.company_name;
-  if(cfg.event_title)document.getElementById('hero-title').textContent=cfg.event_title;
   if(cfg.hero_message)document.getElementById('hero-msg').textContent=cfg.hero_message;
-
-  // Event
   if(cfg.event_date_display)document.getElementById('ev-date').textContent=cfg.event_date_display;
   if(cfg.event_time)document.getElementById('ev-time').textContent=cfg.event_time;
   if(cfg.event_location)document.getElementById('ev-loc').textContent=cfg.event_location;
   if(cfg.event_address)document.getElementById('ev-addr').textContent=cfg.event_address||'';
   if(cfg.event_dress_code)document.getElementById('ev-dress').textContent=cfg.event_dress_code;
-
-  // Map
   if(cfg.map_url)document.getElementById('map-frame').src=cfg.map_url;
   else document.getElementById('map-wrap').style.display='none';
-
-  // Gallery
-  const gal=document.getElementById('gallery');
-  let h='';
-  for(let i=1;i<=4;i++){
-    const u=cfg['gallery_'+i];
-    h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#'+i+'</span></div>';
-  }
+  const gal=document.getElementById('gallery');let h='';
+  for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#'+i+'</span></div>'}
   gal.innerHTML=h;
-
-  // Prices
-  pricePax=parseInt(cfg.price_per_pax)||220;
-  priceAcco=parseInt(cfg.price_accommodation)||450;
-  document.getElementById('opt-price').textContent=pricePax;
-  document.getElementById('acco-price').textContent=priceAcco;
-  document.querySelectorAll('.pax-price').forEach(el=>{const n=el.className.replace('pax-price','').replace('-','');if(n)el.textContent=pricePax*(parseInt(n)||1);else el.textContent=pricePax});
-  document.querySelector('.pax-price-2').textContent=pricePax*2;
-  document.querySelector('.pax-price-3').textContent=pricePax*3;
-  document.querySelector('.pax-price-4').textContent=pricePax*4;
-
-  // Footer
+  pricePax=parseInt(cfg.price_per_pax)||220;priceAcco=parseInt(cfg.price_accommodation)||450;
+  document.getElementById('opt-price').textContent=pricePax;document.getElementById('acco-price').textContent=priceAcco;
+  document.querySelector('.pax-price-2').textContent=pricePax*2;document.querySelector('.pax-price-3').textContent=pricePax*3;document.querySelector('.pax-price-4').textContent=pricePax*4;
+  document.querySelector('.pax-price').textContent=pricePax;
   if(cfg.rsvp_deadline)document.getElementById('rsvp-deadline').textContent=cfg.rsvp_deadline;
   if(cfg.company_name)document.getElementById('footer-brand').textContent=cfg.company_name;
   if(cfg.footer_text)document.getElementById('footer-text').textContent=cfg.footer_text;
   if(cfg.contact_name)document.getElementById('contact-name').textContent=cfg.contact_name;
   if(cfg.contact_phone)document.getElementById('contact-wa').href='https://wa.me/'+cfg.contact_phone;
 }
-
-// ─── REVEAL ───
 function reveal(){document.getElementById('cover').classList.add('revealed')}
-
-// ─── RSVP ───
 function calcTotal(){
   const att=document.getElementById('rsvp-attendance').value;
-  const paxG=document.getElementById('pax-group');
-  const accoG=document.getElementById('acco-group');
-  const totalB=document.getElementById('total-box');
-
+  document.getElementById('pax-group').style.display=att==='hadir'?'block':'none';
+  document.getElementById('acco-group').style.display=att==='hadir'?'block':'none';
   if(att==='hadir'){
-    paxG.style.display='block';accoG.style.display='block';
     const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
     const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
     const total=(pax*pricePax)+(acco*priceAcco);
-    if(total>0){totalB.style.display='flex';document.getElementById('total-amount').textContent='RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2})}
-    else totalB.style.display='none';
+    document.getElementById('total-box').style.display=total>0?'flex':'none';
+    document.getElementById('total-amount').textContent='RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
     document.getElementById('submitBtn').textContent=total>0?'📨 Hantar RSVP & Bayar (RM '+total+')':'📨 Hantar RSVP';
   }else{
-    paxG.style.display='none';accoG.style.display='none';totalB.style.display='none';
+    document.getElementById('total-box').style.display='none';
     document.getElementById('submitBtn').textContent='📨 Hantar RSVP';
   }
 }
-
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
-
 async function submitRSVP(e){
   e.preventDefault();
   const btn=document.getElementById('submitBtn');
@@ -419,41 +349,23 @@ async function submitRSVP(e){
   const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
   const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
   const message=document.getElementById('rsvp-message').value.trim();
-
   if(!name||!phone||!attendance){showToast('⚠️ Sila isi ruangan wajib');return}
-
   const amount=(attendance==='hadir')?(pax*pricePax)+(acco*priceAcco):0;
-
   btn.disabled=true;btn.textContent='⏳ Menghantar...';
-
   try{
-    const res=await fetch(API_RSVP,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()})
-    });
+    const res=await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()})});
     const data=await res.json();
-
     document.getElementById('rsvpForm').style.display='none';
     document.getElementById('rsvpSuccess').style.display='block';
-
     if(data.checkoutUrl){
       document.getElementById('rsvpDoneMsg').textContent='Sila lengkapkan pembayaran untuk mengesahkan kehadiran.';
-      document.getElementById('checkoutLink').style.display='block';
-      document.getElementById('checkoutBtn').href=data.checkoutUrl;
-      // Auto-redirect to payment
+      document.getElementById('checkoutLink').style.display='block';document.getElementById('checkoutBtn').href=data.checkoutUrl;
       setTimeout(()=>{window.open(data.checkoutUrl,'_blank')},1500);
-    }else{
-      document.getElementById('rsvpDoneMsg').textContent='Kehadiran anda telah direkodkan. Jumpa di majlis!';
-    }
+    }else{document.getElementById('rsvpDoneMsg').textContent='Kehadiran anda telah direkodkan. Jumpa di majlis!'}
     document.getElementById('rsvpSuccess').scrollIntoView({behavior:'smooth'});
-  }catch(err){
-    showToast('❌ Ralat sambungan. Cuba lagi.');
-    btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP';
-  }
+  }catch(err){showToast('❌ Ralat sambungan. Cuba lagi.');btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP'}
 }
-
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-
 loadConfig();
 </script>
 </body>

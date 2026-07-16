@@ -7,72 +7,65 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
-  :root{--cream:#FFF8E7;--warm:#5C3D1E;--warm-dark:#3E2723;--gold:#C8963E;--gold-light:#F5DEB3;--gold-dark:#8B6914;--green:#1B7A4A;--white:#FFFBF2;--text:#3E2723;--text-muted:#8D6E63;--border:rgba(200,150,62,0.15);--border-gold:rgba(200,150,62,0.3);--card-bg:rgba(255,251,242,0.85);--danger:#C62828;--success:#2E7D32}
-
+  :root{--bg:#FFFDF5;--card:#FFFFFF;--green:#0D6E6E;--green-dark:#0A5555;--green-light:#E6F2F2;--gold:#B8860B;--gold-light:#F5DEB3;--gold-dark:#8B6508;--text:#1A1A1A;--text-muted:#6B5B4F;--border:#E8E0D5;--border-gold:#D4C5A0;--shadow:0 2px 16px rgba(0,0,0,0.06);--danger:#C62828;--success:#2E7D32}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-  #lockScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(160deg,var(--warm-dark) 0%,#5C3D1E 50%,var(--warm-dark) 100%)}
-  .lock-card{background:var(--card-bg);backdrop-filter:blur(20px);border:1px solid var(--border-gold);border-radius:20px;padding:48px 40px;text-align:center;max-width:400px;width:90%}
+  #lockScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(160deg,var(--green-dark) 0%,#063838 50%,var(--green-dark) 100%)}
+  .lock-card{background:var(--card);border:1px solid var(--border-gold);border-radius:20px;padding:48px 40px;text-align:center;max-width:400px;width:90%;box-shadow:var(--shadow)}
   .lock-card .icon{font-size:48px;margin-bottom:16px}
-  .lock-card h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold-light);margin-bottom:8px}
+  .lock-card h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--green-dark);margin-bottom:8px}
   .lock-card p{color:var(--text-muted);font-size:14px;margin-bottom:24px}
-  .lock-card input{width:100%;padding:14px 18px;border:1px solid var(--border-gold);border-radius:12px;font-size:16px;font-family:inherit;background:var(--white);color:var(--text);outline:none}
-  .lock-card input:focus{border-color:var(--gold)}
-  .lock-card button{width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0F172A;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+  .lock-card input{width:100%;padding:14px 18px;border:1px solid var(--border);border-radius:12px;font-size:16px;font-family:inherit;background:var(--bg);color:var(--text);outline:none}
+  .lock-card input:focus{border-color:var(--green)}
+  .lock-card button{width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:var(--green);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
   .lock-card button:hover{opacity:0.9}
   .err{color:var(--danger);font-size:13px;margin-top:8px;display:none}
 
   #dashboard{display:none;padding:16px 20px 40px;max-width:1100px;margin:0 auto}
   .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-  .header h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold-light)}
+  .header h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--green-dark)}
   .header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-
-  .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card-bg);border-radius:12px;padding:4px;border:1px solid var(--border)}
+  .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border-radius:12px;padding:4px;border:1px solid var(--border)}
   .tab{flex:1;padding:10px;text-align:center;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;color:var(--text-muted)}
-  .tab:hover{background:rgba(201,168,76,0.08)}
-  .tab.active{background:var(--gold);color:#0F172A}
-
-  .btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border-gold);background:var(--card-bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
-  .btn:hover{background:rgba(201,168,76,0.1)}
-  .btn.active{background:var(--gold);color:#0F172A;border-color:var(--gold)}
-  .btn.save{background:var(--gold);color:#0F172A;border-color:var(--gold);font-weight:700}
-  .btn.export{background:var(--success);color:white;border-color:var(--success)}
-
+  .tab:hover{background:var(--green-light)}
+  .tab.active{background:var(--green);color:#fff}
+  .btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
+  .btn:hover{background:var(--green-light)}
+  .btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.save{background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
+  .btn.export{background:var(--gold);color:#fff;border-color:var(--gold)}
   .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-  .stat-card{flex:1;min-width:120px;padding:16px 20px;background:var(--card-bg);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px}
-  .stat-card .num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold-light)}
+  .stat-card{flex:1;min-width:120px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .stat-card .num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green-dark)}
   .stat-card .label{font-size:12px;color:var(--text-muted);margin-top:2px}
-
-  .table-wrap{background:var(--card-bg);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-  table{width:100%;border-collapse:collapse}
-  thead th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--text-muted);background:rgba(200,150,62,0.06);border-bottom:1px solid var(--border)}
-  tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(200,150,62,0.06)}
-  tbody tr:hover{background:rgba(200,150,62,0.06)}
+  .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--text-muted);background:var(--green-light);border-bottom:1px solid var(--border)}
+  tbody td{padding:12px 16px;border-bottom:1px solid #f0ebe0}
+  tbody tr:hover{background:var(--green-light)}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-  .badge-hadir{background:rgba(34,197,94,0.15);color:var(--success)}
-  .badge-tidak{background:rgba(239,68,68,0.15);color:var(--danger)}
-  .badge-paid{background:rgba(34,197,94,0.15);color:var(--success)}
-  .badge-pending{background:rgba(201,168,76,0.15);color:var(--gold)}
+  .badge-hadir{background:rgba(46,125,50,0.12);color:var(--success)}
+  .badge-tidak{background:rgba(198,40,40,0.1);color:var(--danger)}
+  .badge-paid{background:rgba(46,125,50,0.12);color:var(--success)}
+  .badge-pending{background:rgba(184,134,11,0.12);color:var(--gold)}
   .empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
   .empty .icon{font-size:48px;margin-bottom:12px}
-
   .panel{display:none}
   .panel.active{display:block}
   .editor-section{margin-bottom:16px}
-  .editor-section h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold-light);margin-bottom:10px;padding-left:4px}
+  .editor-section h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--green-dark);margin-bottom:10px}
   .editor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
-  .field-group{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+  .field-group{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
   .field-group label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px}
-  .field-group input,.field-group textarea{width:100%;padding:10px 12px;background:var(--white);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);resize:vertical;outline:none}
-  .field-group input:focus,.field-group textarea:focus{border-color:var(--gold)}
+  .field-group input,.field-group textarea{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);resize:vertical;outline:none}
+  .field-group input:focus,.field-group textarea:focus{border-color:var(--green)}
   .field-group textarea{min-height:60px}
   .save-status{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;display:none}
-  .save-status.success{display:inline-block;background:rgba(34,197,94,0.15);color:var(--success)}
-  .save-status.error{display:inline-block;background:rgba(239,68,68,0.15);color:var(--danger)}
+  .save-status.success{display:inline-block;background:rgba(46,125,50,0.12);color:var(--success)}
+  .save-status.error{display:inline-block;background:rgba(198,40,40,0.1);color:var(--danger)}
   .refreshed{font-size:11px;color:var(--text-muted)}
-
-  @media(max-width:768px){.header{flex-direction:column;align-items:flex-start}.editor-grid{grid-template-columns:1fr}table{font-size:11px}thead th,tbody td{padding:8px 10px}}
+  @media(max-width:768px){.header{flex-direction:column;align-items:flex-start}.editor-grid{grid-template-columns:1fr}thead th,tbody td{padding:8px 10px}}
 </style>
 </head>
 <body>
@@ -81,7 +74,7 @@
   <div class="lock-card">
     <div class="icon">🔐</div>
     <h2>Akses Admin</h2>
-    <p>Masukkan kata laluan untuk lihat panel dinner</p>
+    <p>Masukkan kata laluan</p>
     <input type="password" id="password" placeholder="Kata laluan..." onkeydown="if(event.key==='Enter')unlock()">
     <button onclick="unlock()">Buka</button>
     <div class="err" id="errMsg">Kata laluan salah</div>
@@ -96,13 +89,10 @@
       <button class="btn" onclick="refresh()">🔄 Segar</button>
     </div>
   </div>
-
   <div class="tabs">
     <div class="tab active" onclick="switchTab('rsvp')">📋 Senarai RSVP</div>
     <div class="tab" onclick="switchTab('editor')">✏️ Edit Kandungan</div>
   </div>
-
-  <!-- RSVP Panel -->
   <div class="panel active" id="panel-rsvp">
     <div class="stats">
       <div class="stat-card"><div class="num" id="statTotal">-</div><div class="label">Jumlah</div></div>
@@ -114,79 +104,54 @@
       <button class="btn active" id="filterAll" onclick="setFilter('all')">Semua</button>
       <button class="btn" id="filterHadir" onclick="setFilter('hadir')">✅ Hadir</button>
       <button class="btn" id="filterPaid" onclick="setFilter('paid')">💳 Dibayar</button>
-      <button class="btn" id="filterPending" onclick="setFilter('pending')">⏳ Belum Bayar</button>
+      <button class="btn" id="filterPending" onclick="setFilter('pending')">⏳ Belum</button>
       <button class="btn export" onclick="exportCSV()">📥 CSV</button>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>Nama</th><th>Telefon</th><th>Kehadiran</th><th>Pax</th><th>Penginapan</th><th>Jumlah</th><th>Status</th><th>Tarikh</th></tr></thead>
+        <thead><tr><th>#</th><th>Nama</th><th>Telefon</th><th>Kehadiran</th><th>Pax</th><th>Bilik</th><th>Jumlah</th><th>Status</th><th>Tarikh</th></tr></thead>
         <tbody id="rsvpBody"><tr><td colspan="9" class="empty"><div class="icon">⏳</div>Memuatkan...</td></tr></tbody>
       </table>
     </div>
   </div>
-
-  <!-- Editor Panel -->
   <div class="panel" id="panel-editor">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <span style="font-size:13px;color:var(--text-muted)">Edit kandungan dinner — perubahan terus ke laman depan</span>
+      <span style="font-size:13px;color:var(--text-muted)">Edit kandungan — terus ke laman depan</span>
       <div><span class="save-status" id="saveStatus"></span><button class="btn save" onclick="saveConfig()">💾 Simpan</button></div>
     </div>
-
-    <div class="editor-section">
-      <h3>🏢 Syarikat</h3>
-      <div class="editor-grid">
-        <div class="field-group"><label>Nama Syarikat</label><input id="cfg-company_name"></div>
-        <div class="field-group"><label>Tajuk Event</label><input id="cfg-event_title"></div>
-        <div class="field-group"><label>Subtitle (Cover)</label><textarea id="cfg-event_subtitle"></textarea></div>
-        <div class="field-group"><label>Mesej Hero</label><input id="cfg-hero_message"></div>
-        <div class="field-group"><label>Page Title</label><input id="cfg-page_title"></div>
-      </div>
-    </div>
-
-    <div class="editor-section">
-      <h3>📅 Butiran Event</h3>
-      <div class="editor-grid">
-        <div class="field-group"><label>Tarikh (display)</label><input id="cfg-event_date_display" placeholder="Sabtu, 5 Disember 2026"></div>
-        <div class="field-group"><label>Tarikh (ISO)</label><input id="cfg-event_date" placeholder="2026-12-05T19:30:00+08:00"></div>
-        <div class="field-group"><label>Masa</label><input id="cfg-event_time" placeholder="7:30 Malam — 11:00 Malam"></div>
-        <div class="field-group"><label>Lokasi</label><input id="cfg-event_location"></div>
-        <div class="field-group"><label>Alamat</label><input id="cfg-event_address"></div>
-        <div class="field-group"><label>Dress Code</label><input id="cfg-event_dress_code"></div>
-        <div class="field-group"><label>Tarikh Tutup RSVP</label><input id="cfg-rsvp_deadline" placeholder="28 November 2026"></div>
-      </div>
-    </div>
-
-    <div class="editor-section">
-      <h3>💰 Harga</h3>
-      <div class="editor-grid">
-        <div class="field-group"><label>Harga Per Pax (RM)</label><input id="cfg-price_per_pax" type="number" placeholder="220"></div>
-        <div class="field-group"><label>Harga Penginapan (RM)</label><input id="cfg-price_accommodation" type="number" placeholder="450"></div>
-      </div>
-    </div>
-
-    <div class="editor-section">
-      <h3>🗺️ Peta & Galeri</h3>
-      <div class="editor-grid">
-        <div class="field-group"><label>Google Maps Embed URL</label><textarea id="cfg-map_url"></textarea></div>
-        <div class="field-group"><label>Gambar #1 URL</label><input id="cfg-gallery_1"></div>
-        <div class="field-group"><label>Gambar #2 URL</label><input id="cfg-gallery_2"></div>
-        <div class="field-group"><label>Gambar #3 URL</label><input id="cfg-gallery_3"></div>
-        <div class="field-group"><label>Gambar #4 URL</label><input id="cfg-gallery_4"></div>
-      </div>
-    </div>
-
-    <div class="editor-section">
-      <h3>📞 Footer & Kontak</h3>
-      <div class="editor-grid">
-        <div class="field-group"><label>Footer Text</label><input id="cfg-footer_text"></div>
-        <div class="field-group"><label>Nama Kontak</label><input id="cfg-contact_name" placeholder="En. Ahmad"></div>
-        <div class="field-group"><label>No. Telefon (WhatsApp)</label><input id="cfg-contact_phone" placeholder="60197233997"></div>
-      </div>
-    </div>
-
+    <div class="editor-section"><h3>🏢 Syarikat</h3><div class="editor-grid">
+      <div class="field-group"><label>Nama Syarikat</label><input id="cfg-company_name"></div>
+      <div class="field-group"><label>Tajuk Event</label><input id="cfg-event_title"></div>
+      <div class="field-group"><label>Subtitle</label><textarea id="cfg-event_subtitle"></textarea></div>
+      <div class="field-group"><label>Mesej Hero</label><input id="cfg-hero_message"></div>
+      <div class="field-group"><label>Page Title</label><input id="cfg-page_title"></div>
+    </div></div>
+    <div class="editor-section"><h3>📅 Butiran</h3><div class="editor-grid">
+      <div class="field-group"><label>Tarikh Display</label><input id="cfg-event_date_display"></div>
+      <div class="field-group"><label>Masa</label><input id="cfg-event_time"></div>
+      <div class="field-group"><label>Lokasi</label><input id="cfg-event_location"></div>
+      <div class="field-group"><label>Alamat</label><input id="cfg-event_address"></div>
+      <div class="field-group"><label>Dress Code</label><input id="cfg-event_dress_code"></div>
+      <div class="field-group"><label>Tutup RSVP</label><input id="cfg-rsvp_deadline"></div>
+    </div></div>
+    <div class="editor-section"><h3>💰 Harga</h3><div class="editor-grid">
+      <div class="field-group"><label>Harga/Pax (RM)</label><input id="cfg-price_per_pax" type="number"></div>
+      <div class="field-group"><label>Harga Bilik (RM)</label><input id="cfg-price_accommodation" type="number"></div>
+    </div></div>
+    <div class="editor-section"><h3>🗺️ Peta & Galeri</h3><div class="editor-grid">
+      <div class="field-group"><label>Maps Embed URL</label><textarea id="cfg-map_url"></textarea></div>
+      <div class="field-group"><label>Gambar #1</label><input id="cfg-gallery_1"></div>
+      <div class="field-group"><label>Gambar #2</label><input id="cfg-gallery_2"></div>
+      <div class="field-group"><label>Gambar #3</label><input id="cfg-gallery_3"></div>
+      <div class="field-group"><label>Gambar #4</label><input id="cfg-gallery_4"></div>
+    </div></div>
+    <div class="editor-section"><h3>📞 Footer</h3><div class="editor-grid">
+      <div class="field-group"><label>Footer Text</label><input id="cfg-footer_text"></div>
+      <div class="field-group"><label>Nama Kontak</label><input id="cfg-contact_name"></div>
+      <div class="field-group"><label>No. Telefon</label><input id="cfg-contact_phone"></div>
+    </div></div>
     <div style="text-align:right;margin-top:20px">
-      <span class="save-status" id="saveStatus2"></span>
-      <button class="btn save" onclick="saveConfig()">💾 Simpan Semua</button>
+      <span class="save-status" id="saveStatus2"></span><button class="btn save" onclick="saveConfig()">💾 Simpan Semua</button>
     </div>
   </div>
 </div>
@@ -195,92 +160,52 @@
 const API_RSVP='https://www.jayibrahimalislam.com/api/dinner-rsvp?secret=rsvp2026';
 const API_CONFIG='https://www.jayibrahimalislam.com/api/dinner-config';
 const PASSWORD='rsvp2026';
-let allData=[],currentFilter='all',configData={};
+let allData=[],currentFilter='all';
 
 function unlock(){
   if(document.getElementById('password').value===PASSWORD){
-    document.getElementById('lockScreen').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    document.getElementById('errMsg').style.display='none';
-    refresh();loadConfig();
+    document.getElementById('lockScreen').style.display='none';document.getElementById('dashboard').style.display='block';
+    document.getElementById('errMsg').style.display='none';refresh();loadConfig()
   }else{document.getElementById('errMsg').style.display='block';document.getElementById('password').value=''}
 }
-
 function switchTab(t){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('panel-'+t).classList.add('active');
+  event.target.classList.add('active');document.getElementById('panel-'+t).classList.add('active')
 }
-
-// ─── RSVP ───
 async function refresh(){
   try{const res=await fetch(API_RSVP),j=await res.json();allData=j.rsvps||[];
     document.getElementById('refreshedAt').textContent='Dikemaskini: '+new Date().toLocaleTimeString('ms-MY');
-    render(currentFilter);
+    render(currentFilter)
   }catch(e){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="9" class="empty"><div class="icon">❌</div>Gagal</td></tr>'}
 }
-
-function setFilter(f){
-  currentFilter=f;
-  ['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));
-  document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');
-  render(f);
-}
-
+function setFilter(f){currentFilter=f;['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');render(f)}
 function render(f){
-  let d=allData;
-  if(f==='hadir')d=d.filter(r=>r.attendance==='hadir');
-  if(f==='paid')d=d.filter(r=>r.payment_status==='paid'||r.payment_status==='confirmed');
-  if(f==='pending')d=d.filter(r=>r.payment_status==='pending'||r.payment_status==='created');
-
-  const hadir=allData.filter(r=>r.attendance==='hadir');
-  const totalPax=hadir.reduce((s,r)=>s+(r.pax||0),0);
-  const totalRev=allData.reduce((s,r)=>s+(r.amount||0),0);
-  document.getElementById('statTotal').textContent=allData.length;
-  document.getElementById('statHadir').textContent=hadir.length;
-  document.getElementById('statPax').textContent=totalPax;
-  document.getElementById('statRevenue').textContent='RM '+totalRev.toLocaleString('ms-MY',{minimumFractionDigits:2});
-
+  let d=allData;if(f==='hadir')d=d.filter(r=>r.attendance==='hadir');if(f==='paid')d=d.filter(r=>r.payment_status==='paid'||r.payment_status==='confirmed');if(f==='pending')d=d.filter(r=>r.payment_status==='pending'||r.payment_status==='created');
+  const hadir=allData.filter(r=>r.attendance==='hadir');const tp=hadir.reduce((s,r)=>s+(r.pax||0),0);const tr=allData.reduce((s,r)=>s+(r.amount||0),0);
+  document.getElementById('statTotal').textContent=allData.length;document.getElementById('statHadir').textContent=hadir.length;document.getElementById('statPax').textContent=tp;document.getElementById('statRevenue').textContent='RM '+tr.toLocaleString('ms-MY',{minimumFractionDigits:2});
   if(!d.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="9" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
   document.getElementById('rsvpBody').innerHTML=d.map(r=>`<tr>
-    <td>${r.id}</td><td><strong>${esc(r.name)}</strong></td>
-    <td><a style="color:var(--gold)" href="https://wa.me/6${esc(String(r.phone).replace(/[^0-9]/g,''))}">${esc(r.phone)}</a></td>
+    <td>${r.id}</td><td><strong>${esc(r.name)}</strong></td><td><a style="color:var(--green)" href="https://wa.me/6${esc(String(r.phone).replace(/[^0-9]/g,''))}">${esc(r.phone)}</a></td>
     <td><span class="badge ${r.attendance==='hadir'?'badge-hadir':'badge-tidak'}">${r.attendance==='hadir'?'✅ Hadir':'❌ Tidak'}</span></td>
-    <td>${r.pax||'-'}</td>
-    <td>${r.accommodation?'✅':'—'}</td>
-    <td>RM ${(r.amount||0).toLocaleString('ms-MY',{minimumFractionDigits:2})}</td>
+    <td>${r.pax||'-'}</td><td>${r.accommodation?'✅':'—'}</td><td>RM ${(r.amount||0).toLocaleString('ms-MY',{minimumFractionDigits:2})}</td>
     <td><span class="badge ${r.payment_status==='paid'||r.payment_status==='confirmed'?'badge-paid':'badge-pending'}">${r.payment_status==='paid'||r.payment_status==='confirmed'?'💳 Dibayar':'⏳ Belum'}</span></td>
-    <td>${r.timestamp?new Date(r.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td>
-  </tr>`).join('');
+    <td>${r.timestamp?new Date(r.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td></tr>`).join('')
 }
-
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-
 function exportCSV(){
-  const rows=[['ID','Nama','Telefon','Kehadiran','Pax','Penginapan','Jumlah','Status','Tarikh']];
+  const rows=[['ID','Nama','Telefon','Kehadiran','Pax','Bilik','Jumlah','Status','Tarikh']];
   allData.forEach(r=>rows.push([r.id,r.name,r.phone,r.attendance,r.pax,r.accommodation,r.amount,r.payment_status,r.timestamp]));
   const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='dinner-rsvp.csv';a.click()
 }
-
-// ─── EDITOR ───
-async function loadConfig(){
-  try{const res=await fetch(API_CONFIG),j=await res.json();configData=j.config||{};
-    Object.entries(configData).forEach(([k,v])=>{const el=document.getElementById('cfg-'+k);if(el)el.value=v})
-  }catch(e){console.error(e)}
-}
-
+async function loadConfig(){try{const res=await fetch(API_CONFIG),j=await res.json();Object.entries(j.config||{}).forEach(([k,v])=>{const el=document.getElementById('cfg-'+k);if(el)el.value=v})}catch(e){}}
 async function saveConfig(){
   const el=document.getElementById('saveStatus'),el2=document.getElementById('saveStatus2');
-  const formData=new URLSearchParams();
-  formData.append('secret','rsvp2026');
-  document.querySelectorAll('[id^="cfg-"]').forEach(el=>{formData.append('cfg_'+el.id.replace('cfg-',''),el.value)});
-  try{
-    const res=await fetch(API_CONFIG,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:formData.toString()});
-    const j=await res.json();
-    if(j.success){[el,el2].forEach(e=>{e.className='save-status success';e.textContent='✅ Tersimpan!'})}
-    else{[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ '+j.error})}
+  const fd=new URLSearchParams();fd.append('secret','rsvp2026');
+  document.querySelectorAll('[id^="cfg-"]').forEach(el=>{fd.append('cfg_'+el.id.replace('cfg-',''),el.value)});
+  try{const res=await fetch(API_CONFIG,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:fd.toString()});const j=await res.json();
+    if(j.success){[el,el2].forEach(e=>{e.className='save-status success';e.textContent='✅ Tersimpan!'})}else{[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ '+j.error})}
     setTimeout(()=>[el,el2].forEach(e=>e.className='save-status'),3000)
   }catch(e){[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ Gagal'})}
 }
