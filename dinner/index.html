@@ -353,7 +353,7 @@ async function submitRSVP(e){
   const amount=(attendance==='hadir')?(pax*pricePax)+(acco*priceAcco):0;
   btn.disabled=true;btn.textContent='⏳ Menghantar...';
   try{
-    const res=await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()})});
+    const res=await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()}).toString()});
     const data=await res.json();
     document.getElementById('rsvpForm').style.display='none';
     document.getElementById('rsvpSuccess').style.display='block';
