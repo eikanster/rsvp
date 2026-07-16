@@ -366,6 +366,25 @@ async function submitRSVP(e){
   }catch(err){showToast('❌ Ralat sambungan. Cuba lagi.');btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP'}
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// Handle payment return from CHIP
+(function(){
+  const p=new URLSearchParams(location.search);
+  const status=p.get('status');
+  const id=p.get('id');
+  if(status==='success'){
+    document.getElementById('rsvpForm').style.display='none';
+    document.getElementById('rsvpSuccess').style.display='block';
+    document.getElementById('rsvpDoneMsg').innerHTML='✅ <strong>Pembayaran Berjaya!</strong><br>No. Rujukan: <strong>DINNER-'+esc(id||'?')+'</strong>';
+    document.getElementById('checkoutLink').style.display='none';
+  }else if(status==='failed'){
+    document.getElementById('rsvpForm').style.display='none';
+    document.getElementById('rsvpSuccess').style.display='block';
+    document.getElementById('rsvpDoneMsg').innerHTML='❌ Pembayaran tidak berjaya.<br>Sila cuba lagi atau hubungi kami.';
+    document.getElementById('checkoutLink').style.display='none';
+  }
+})();
+
 loadConfig();
 </script>
 </body>
