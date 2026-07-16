@@ -1,77 +1,48 @@
-# Wedding RSVP Invitation — Setup Guide
+# RSVP — Wedding & Dinner Invitation Pages
 
-## Apa yang dah siap:
-✅ Single HTML page dengan Islamic theme (emas + emerald)  
-✅ Countdown timer ke tarikh majlis  
-✅ "Buka Jemputan" button reveal dengan background music  
-✅ RSVP form untuk kehadiran (compulsory)  
-✅ Google Maps embed  
-✅ Photo gallery  
-✅ Doa section (Arabic + BM)  
-✅ Mobile-first responsive design  
-✅ Music toggle button  
+Multi-mode RSVP system. Same codebase, two modes:
 
----
+| Mode | Frontend | Admin | Theme |
+|---|---|---|---|
+| **Wedding** | `/` | `/admin` | Liquid Glass + Romantic Gold |
+| **Dinner** | `/dinner` | `/dinner/admin` | Dark Navy + Gold |
 
-## 🔧 Setup Steps:
+## Architecture
 
-### 1. Ganti Content dalam `index.html`
+```
+rsvp/                       ← this repo (CF Pages)
+├── index.html              → wedding frontend
+├── admin.html              → wedding admin
+├── dinner/
+│   ├── index.html          → dinner frontend
+│   └── admin.html          → dinner admin
+├── music.mp3
+└── README.md
 
-| Yang perlu diganti | Kod cari | Contoh |
-|---|---|---|
-| **Nama pengantin** | `Pengantin Perempuan` & `Pengantin Lelaki` | "Nurul & Hafiz" |
-| **Tarikh kahwin** | `WEDDING_DATE = new Date('2026-11-01T10:00:00+08:00')` | Tukar tarikh |
-| **Lokasi & event details** | `event-card` sections | Akad Nikah, Resepsi |
-| **Gambar** | Ganti `gallery-placeholder` dengan `<img>` | `<img src="url-gambar">` |
-| **Muzik latar** | `<source src="" type="audio/mpeg">` | Ganti dengan URL mp3 |
-| **Google Maps embed** | `iframe src="..."` | Ganti dengan lokasi sebenar |
+jayibrahimwebsitev3/        ← JIAI repo (API + D1)
+├── functions/api/
+│   ├── rsvp.js             → wedding RSVP API
+│   ├── dinner-rsvp.js      → dinner RSVP + CHIP payment
+│   ├── wedding-config.js   → editable wedding content
+│   └── dinner-config.js    → editable dinner content
+└── D1: jayibrahim-db
+    ├── wedding_rsvp
+    ├── wedding_config
+    ├── dinner_rsvp
+    └── dinner_config
+```
 
-### 2. Setup Google Sheets untuk RSVP
+## Deploy
 
-1. Buka [sheets.google.com](https://sheets.google.com) — login guna Google account
-2. Create new sheet → rename ke **"RSVP"**
-3. Extensions → **Apps Script**
-4. Paste code dari file `apps-script.gs`
-5. Klik **Deploy** → **New Deployment**
-6. Pilih **Web App**
-   - Execute as: `Me`
-   - Who has access: `Anyone`
-7. Klik **Deploy** → **Authorize** → copy URL
-8. Paste URL dalam `index.html` → cari `RSVP_API_URL = ''`
-
-### 3. Hosting
-
-#### Option A: GitHub Pages (Percuma, paling senang)
 ```bash
-# Create repo di GitHub, then:
-git init
-git add .
-git commit -m "Wedding RSVP"
-git push origin main
-# Settings → Pages → Deploy from main → Save
+npx wrangler pages deploy . --project-name wedding-rsvp --branch main
 ```
 
-#### Option B: Cloudflare R2 (Percuma, CDN)
-```bash
-# Upload ke R2 bucket (jiai-uploads)
-# Atau guna Workers untuk static serve
-```
+## Edit Content
 
-#### Option C: Static hosting lain
-- Netlify (drag-drop, free)
-- Vercel (free)
-- Surge.sh (1 command)
+1. Buka `wedding-rsvp-yfa.pages.dev/admin` (wedding) atau `.../dinner/admin` (dinner)
+2. Password: ***
 
-### 4. Share ke Jemaah
-
-Selepas deploy, share URL dengan WhatsApp:
-```
-Assalamualaikum! Jemput ke majlis kami:
-🌐 https://nama-kau.github.io/wedding
-```
-
----
-
-## 📱 Preview sekarang:
-
-**http://100.95.59.98:8888** (Tailscale)
+3. Tab ✏️ Edit Kandungan
+4. Ubah → Simpan
+5. Front page auto update
