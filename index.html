@@ -473,6 +473,11 @@
 </audio>
 
 <script>
+// Redirect dinner subdomain to /dinner
+if (window.location.hostname.startsWith('dinner') && window.location.pathname === '/') {
+  window.location.replace('/dinner');
+}
+
 // ============ CONFIG LOADER ============
 const API_CONFIG = 'https://www.jayibrahimalislam.com/api/wedding-config';
 let cfg = {};
