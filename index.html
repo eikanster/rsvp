@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jemputan Walimatulurus</title>
+<script>
+// Instant redirect for dinner subdomain
+if (location.hostname.startsWith('dinner') && location.pathname === '/') location.replace('/dinner');
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@300;400;500;600;700&family=Great+Vibes&family=Scheherazade+New:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -473,11 +477,6 @@
 </audio>
 
 <script>
-// Redirect dinner subdomain to /dinner
-if (window.location.hostname.startsWith('dinner') && window.location.pathname === '/') {
-  window.location.replace('/dinner');
-}
-
 // ============ CONFIG LOADER ============
 const API_CONFIG = 'https://www.jayibrahimalislam.com/api/wedding-config';
 let cfg = {};
