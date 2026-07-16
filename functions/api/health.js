@@ -1,5 +1,5 @@
 export async function onRequest() {
-  return new Response(JSON.stringify({ status: 'ok', version: 'rsvp' }), {
-    headers: { 'Content-Type': 'application/json' }
+  return new Response('{"ok":true}', {
+    headers: { "Content-Type": "application/json" }
   });
 }
