@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Majlis Santapan Malam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --navy: #0F172A; --navy-light: #1E293B; --navy-card: #162032;
+    --gold: #C9A84C; --gold-light: #F5E6B8; --gold-dark: #8B6914;
+    --white: #F8FAFC; --text: #E2E8F0; --text-muted: #94A3B8;
+    --border: rgba(201,168,76,0.15); --border-gold: rgba(201,168,76,0.3);
+    --success: #22C55E; --danger: #EF4444;
+    --card-bg: rgba(22,32,50,0.85);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:var(--navy); color:var(--text);
+    overflow-x:hidden; -webkit-tap-highlight-color:transparent;
+  }
+
+  @keyframes bgPulse {
+    0%,100%{opacity:0.4} 50%{opacity:0.7}
+  }
+  .bg-orb {
+    position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;
+  }
+  .bg-orb-1{width:500px;height:500px;background:rgba(201,168,76,0.06);top:-100px;left:-100px;animation:bgPulse 8s ease-in-out infinite}
+  .bg-orb-2{width:400px;height:400px;background:rgba(201,168,76,0.04);bottom:-80px;right:-80px;animation:bgPulse 10s ease-in-out infinite reverse}
+  .bg-pattern{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(201,168,76,0.03) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+
+  .container{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 20px}
+  .gold-text{background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .divider{display:flex;align-items:center;gap:12px;margin:28px 0;color:var(--gold);font-size:0.5rem;opacity:0.4}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
+  .sec-head{text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);margin:8px 0 20px;letter-spacing:2px}
+
+  /* ─── COVER ─── */
+  .cover{
+    position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;background:linear-gradient(160deg,var(--navy) 0%,#0a0f1d 50%,var(--navy) 100%);
+    transition:transform 0.9s cubic-bezier(0.7,0,0.3,1),opacity 0.9s;
+  }
+  .cover.revealed{transform:translateY(-100%);opacity:0;pointer-events:none}
+  .cover-logo{font-size:48px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .cover-company{font-size:0.75rem;letter-spacing:8px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;font-weight:500}
+  .cover-title{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--gold-light);text-align:center;line-height:1.2;margin-bottom:8px}
+  .cover-sub{font-size:0.85rem;color:var(--text-muted);text-align:center;max-width:320px;margin-bottom:40px;line-height:1.6}
+  .btn-reveal{
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    border:none;color:#0F172A;padding:16px 48px;font-size:1rem;
+    font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+    border-radius:60px;cursor:pointer;letter-spacing:2px;
+    text-transform:uppercase;transition:all 0.3s;
+    box-shadow:0 4px 24px rgba(201,168,76,0.3);
+  }
+  .btn-reveal:hover{transform:scale(1.03);box-shadow:0 8px 32px rgba(201,168,76,0.4)}
+  .btn-reveal:active{transform:scale(0.96)}
+
+  /* ─── HERO ─── */
+  .hero{text-align:center;padding:60px 0 30px}
+  .hero-company{font-size:0.7rem;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+  .hero-title{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--gold-light);line-height:1.15;margin-bottom:16px}
+  .hero-msg{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text-muted);font-style:italic;line-height:1.7;max-width:400px;margin:0 auto}
+
+  /* ─── EVENT CARD ─── */
+  .event-card{
+    background:var(--card-bg);backdrop-filter:blur(24px);
+    border:1px solid var(--border);border-radius:20px;padding:32px 28px;
+    margin:20px 0;position:relative;overflow:hidden;
+    box-shadow:0 4px 32px rgba(0,0,0,0.2);
+  }
+  .event-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.5}
+  .event-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .event-row:last-child{border-bottom:none}
+  .event-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+  .event-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:2px}
+  .event-value{font-size:0.95rem;color:var(--text);font-weight:500}
+
+  /* ─── PRICE CARDS ─── */
+  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+  .price-card{
+    background:var(--card-bg);backdrop-filter:blur(24px);
+    border:1px solid var(--border);border-radius:16px;padding:24px 20px;
+    text-align:center;cursor:pointer;transition:all 0.3s;
+    position:relative;overflow:hidden;
+  }
+  .price-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .price-card.selected{border-color:var(--gold);background:rgba(201,168,76,0.08);box-shadow:0 0 0 2px rgba(201,168,76,0.3)}
+  .price-card .label{font-size:0.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--text-muted);margin-bottom:8px}
+  .price-card .amount{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold-light);font-weight:700}
+  .price-card .desc{font-size:0.75rem;color:var(--text-muted);margin-top:4px}
+
+  /* ─── FORM ─── */
+  .form-group{margin-bottom:16px}
+  .form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+  .form-label .req{color:var(--danger)}
+  .form-input,.form-select,.form-textarea{
+    width:100%;padding:14px 18px;background:rgba(15,23,42,0.6);
+    border:1.5px solid var(--border);border-radius:12px;
+    font-size:0.9rem;font-family:inherit;color:var(--text);
+    transition:all 0.3s;outline:none;
+  }
+  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+  .form-textarea{min-height:70px;resize:vertical}
+  .form-select option{background:var(--navy-light);color:var(--text)}
+
+  .btn-submit{
+    width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy);border:none;border-radius:14px;
+    font-size:1rem;font-family:inherit;font-weight:700;
+    letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+    box-shadow:0 4px 24px rgba(201,168,76,0.25);transition:all 0.3s;
+  }
+  .btn-submit:hover{transform:scale(1.01);box-shadow:0 8px 32px rgba(201,168,76,0.35)}
+  .btn-submit:disabled{opacity:0.4;transform:none;cursor:not-allowed}
+  .btn-submit:active{transform:scale(0.97)}
+
+  /* ─── RSVP SECTION ─── */
+  .rsvp-section{background:var(--card-bg);backdrop-filter:blur(24px);border:1px solid var(--border-gold);border-radius:20px;padding:36px 28px;margin:28px 0}
+  .rsvp-title{text-align:center;font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold-light);margin-bottom:4px}
+  .rsvp-sub{text-align:center;font-size:0.8rem;color:var(--text-muted);margin-bottom:28px}
+  .rsvp-done{display:none;text-align:center;padding:20px 0}
+  .rsvp-done .icon{font-size:56px;margin-bottom:12px}
+  .rsvp-done h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold-light)}
+  .rsvp-done p{font-size:0.85rem;color:var(--text-muted);margin-top:6px}
+  .rsvp-done .checkout{margin-top:16px}
+  .rsvp-done .checkout a{
+    display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:var(--navy);padding:14px 32px;border-radius:12px;text-decoration:none;
+    font-weight:700;letter-spacing:1px;transition:transform 0.2s;
+  }
+  .rsvp-done .checkout a:hover{transform:scale(1.03)}
+
+  .total-box{
+    background:rgba(201,168,76,0.08);border:1px solid var(--border-gold);
+    border-radius:12px;padding:14px 18px;margin-top:16px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .total-box .label{font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px}
+  .total-box .amount{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold-light);font-weight:700}
+
+  /* ─── MAP ─── */
+  .map-wrap{border-radius:16px;overflow:hidden;margin:20px 0;border:1px solid var(--border)}
+  .map-wrap iframe{width:100%;height:240px;border:none;display:block}
+
+  /* ─── GALLERY ─── */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:20px 0}
+  .gallery-item{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--navy-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+  .gallery-item img{width:100%;height:100%;object-fit:cover}
+  .gallery-placeholder{font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-align:center;opacity:0.4}
+
+  /* ─── FOOTER ─── */
+  .footer{text-align:center;padding:48px 0 36px;color:var(--text-muted);font-size:0.8rem;line-height:2.2}
+  .footer-brand{font-size:1.2rem;color:var(--gold);font-family:'Playfair Display',serif}
+
+  /* ─── TOAST ─── */
+  .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:var(--navy-light);color:var(--gold-light);padding:12px 28px;border-radius:60px;font-size:0.8rem;z-index:1001;opacity:0;pointer-events:none;transition:opacity 0.3s;border:1px solid var(--border-gold);font-weight:500}
+  .toast.show{opacity:1}
+
+  @media(max-width:480px){
+    .cover-title{font-size:2rem}
+    .hero-title{font-size:1.8rem}
+    .price-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-pattern"></div>
+
+<!-- COVER -->
+<div class="cover" id="cover">
+  <div class="cover-logo">🥂</div>
+  <div class="cover-company" id="cover-company">Syarikat ABC Sdn Bhd</div>
+  <div class="cover-title" id="cover-title">Majlis Santapan<br>Malam Apresiasi</div>
+  <div class="cover-sub" id="cover-sub">Dengan penuh rasa syukur, kami menjemput anda ke majlis santapan malam tahunan.</div>
+  <button class="btn-reveal" onclick="reveal()">✨ Buka Jemputan</button>
+</div>
+
+<div class="container">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-company" id="hero-company">Syarikat ABC Sdn Bhd</div>
+    <h1 class="hero-title" id="hero-title">Majlis Santapan Malam Apresiasi</h1>
+    <p class="hero-msg" id="hero-msg">Meriahkan malam penuh kenangan bersama kami.</p>
+  </section>
+
+  <div class="divider">✦</div>
+
+  <!-- EVENT -->
+  <div class="event-card">
+    <div class="event-row">
+      <div class="event-icon">📅</div>
+      <div><div class="event-label">Tarikh</div><div class="event-value" id="ev-date">Sabtu, 5 Disember 2026</div></div>
+    </div>
+    <div class="event-row">
+      <div class="event-icon">⏰</div>
+      <div><div class="event-label">Masa</div><div class="event-value" id="ev-time">7:30 Malam — 11:00 Malam</div></div>
+    </div>
+    <div class="event-row">
+      <div class="event-icon">📍</div>
+      <div><div class="event-label">Lokasi</div><div class="event-value" id="ev-loc">Dewan Serbaguna, Hotel Istana</div><div style="font-size:0.75rem;color:var(--text-muted)" id="ev-addr">73, Jalan Raja Chulan, 50200 Kuala Lumpur</div></div>
+    </div>
+    <div class="event-row">
+      <div class="event-icon">👔</div>
+      <div><div class="event-label">Pakaian</div><div class="event-value" id="ev-dress">Smart Casual / Baju Batik</div></div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-wrap" id="map-wrap">
+    <iframe id="map-frame" src="" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+
+  <div class="divider">✦</div>
+
+  <h3 class="sec-head">📸 Galeri</h3>
+  <div class="gallery" id="gallery">
+    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#1</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#2</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#3</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#4</span></div>
+  </div>
+
+  <div class="divider">✦</div>
+
+  <!-- RSVP -->
+  <div class="rsvp-section">
+    <div class="rsvp-title">🥂 Sahkan Kehadiran</div>
+    <div class="rsvp-sub">Sila RSVP sebelum <strong id="rsvp-deadline">28 November 2026</strong></div>
+
+    <form id="rsvpForm" onsubmit="submitRSVP(event)">
+      <div class="form-group">
+        <label class="form-label">Nama Penuh <span class="req">*</span></label>
+        <input type="text" class="form-input" id="rsvp-name" placeholder="Nama anda..." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombor Telefon <span class="req">*</span></label>
+        <input type="tel" class="form-input" id="rsvp-phone" placeholder="012-3456789" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kehadiran <span class="req">*</span></label>
+        <select class="form-select" id="rsvp-attendance" required onchange="calcTotal()">
+          <option value="">— Sila Pilih —</option>
+          <option value="hadir">✅ Hadir (RM<span id="opt-price">220</span>/pax)</option>
+          <option value="tidak-hadir">❌ Maaf, Tidak Dapat Hadir</option>
+        </select>
+      </div>
+      <div class="form-group" id="pax-group" style="display:none">
+        <label class="form-label">Bilangan Pax <span class="req">*</span></label>
+        <select class="form-select" id="rsvp-pax" onchange="calcTotal()">
+          <option value="1">1 orang — RM<span class="pax-price">220</span></option>
+          <option value="2">2 orang — RM<span class="pax-price-2">440</span></option>
+          <option value="3">3 orang — RM<span class="pax-price-3">660</span></option>
+          <option value="4">4 orang — RM<span class="pax-price-4">880</span></option>
+        </select>
+      </div>
+
+      <!-- Accommodation -->
+      <div class="form-group" id="acco-group" style="display:none">
+        <label class="form-label">Penginapan (Optional)</label>
+        <select class="form-select" id="rsvp-acco" onchange="calcTotal()">
+          <option value="0">Tidak perlu</option>
+          <option value="1">1 bilik (+RM<span id="acco-price">450</span>)</option>
+        </select>
+      </div>
+
+      <!-- Total -->
+      <div class="total-box" id="total-box" style="display:none">
+        <span class="label">Jumlah</span>
+        <span class="amount" id="total-amount">RM 0.00</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ucapan / Nota</label>
+        <textarea class="form-textarea" id="rsvp-message" placeholder="Tinggalkan ucapan atau keperluan khas..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">📨 Hantar RSVP & Bayar</button>
+    </form>
+
+    <div class="rsvp-done" id="rsvpSuccess">
+      <div class="icon">🎉</div>
+      <h3>RSVP Diterima!</h3>
+      <p id="rsvpDoneMsg">Kehadiran anda telah direkodkan.</p>
+      <div class="checkout" id="checkoutLink" style="display:none">
+        <a id="checkoutBtn" href="#" target="_blank">💳 Bayar Sekarang</a>
+        <p style="font-size:0.7rem;margin-top:8px;color:var(--text-muted)">Pembayaran melalui CHIP (FPX / Kad / eWallet)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand" id="footer-brand">Syarikat ABC Sdn Bhd</div>
+    <p id="footer-text">Terima kasih kerana sudi hadir memeriahkan majlis kami.</p>
+    <small>Sebarang pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--gold)" id="contact-wa" href="#">WhatsApp</a></small>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_RSVP = 'https://www.jayibrahimalislam.com/api/dinner-rsvp';
+const API_CONFIG = 'https://www.jayibrahimalislam.com/api/dinner-config';
+const SECRET = 'rsvp2026';
+let cfg = {};
+let pricePax = 220, priceAcco = 450;
+
+// ─── LOAD CONFIG ───
+async function loadConfig(){
+  try{
+    const res=await fetch(API_CONFIG),j=await res.json();
+    cfg=j.config||{};
+    applyConfig();
+  }catch(e){console.warn('Config fallback')}
+}
+
+function applyConfig(){
+  if(!Object.keys(cfg).length)return;
+
+  document.title=cfg.page_title||document.title;
+
+  // Cover
+  if(cfg.company_name)document.getElementById('cover-company').textContent=cfg.company_name;
+  if(cfg.event_title)document.getElementById('cover-title').innerHTML=cfg.event_title.replace(/\n/g,'<br>');
+  if(cfg.event_subtitle)document.getElementById('cover-sub').textContent=cfg.event_subtitle;
+
+  // Hero
+  if(cfg.company_name)document.getElementById('hero-company').textContent=cfg.company_name;
+  if(cfg.event_title)document.getElementById('hero-title').textContent=cfg.event_title;
+  if(cfg.hero_message)document.getElementById('hero-msg').textContent=cfg.hero_message;
+
+  // Event
+  if(cfg.event_date_display)document.getElementById('ev-date').textContent=cfg.event_date_display;
+  if(cfg.event_time)document.getElementById('ev-time').textContent=cfg.event_time;
+  if(cfg.event_location)document.getElementById('ev-loc').textContent=cfg.event_location;
+  if(cfg.event_address)document.getElementById('ev-addr').textContent=cfg.event_address||'';
+  if(cfg.event_dress_code)document.getElementById('ev-dress').textContent=cfg.event_dress_code;
+
+  // Map
+  if(cfg.map_url)document.getElementById('map-frame').src=cfg.map_url;
+  else document.getElementById('map-wrap').style.display='none';
+
+  // Gallery
+  const gal=document.getElementById('gallery');
+  let h='';
+  for(let i=1;i<=4;i++){
+    const u=cfg['gallery_'+i];
+    h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#'+i+'</span></div>';
+  }
+  gal.innerHTML=h;
+
+  // Prices
+  pricePax=parseInt(cfg.price_per_pax)||220;
+  priceAcco=parseInt(cfg.price_accommodation)||450;
+  document.getElementById('opt-price').textContent=pricePax;
+  document.getElementById('acco-price').textContent=priceAcco;
+  document.querySelectorAll('.pax-price').forEach(el=>{const n=el.className.replace('pax-price','').replace('-','');if(n)el.textContent=pricePax*(parseInt(n)||1);else el.textContent=pricePax});
+  document.querySelector('.pax-price-2').textContent=pricePax*2;
+  document.querySelector('.pax-price-3').textContent=pricePax*3;
+  document.querySelector('.pax-price-4').textContent=pricePax*4;
+
+  // Footer
+  if(cfg.rsvp_deadline)document.getElementById('rsvp-deadline').textContent=cfg.rsvp_deadline;
+  if(cfg.company_name)document.getElementById('footer-brand').textContent=cfg.company_name;
+  if(cfg.footer_text)document.getElementById('footer-text').textContent=cfg.footer_text;
+  if(cfg.contact_name)document.getElementById('contact-name').textContent=cfg.contact_name;
+  if(cfg.contact_phone)document.getElementById('contact-wa').href='https://wa.me/'+cfg.contact_phone;
+}
+
+// ─── REVEAL ───
+function reveal(){document.getElementById('cover').classList.add('revealed')}
+
+// ─── RSVP ───
+function calcTotal(){
+  const att=document.getElementById('rsvp-attendance').value;
+  const paxG=document.getElementById('pax-group');
+  const accoG=document.getElementById('acco-group');
+  const totalB=document.getElementById('total-box');
+
+  if(att==='hadir'){
+    paxG.style.display='block';accoG.style.display='block';
+    const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
+    const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
+    const total=(pax*pricePax)+(acco*priceAcco);
+    if(total>0){totalB.style.display='flex';document.getElementById('total-amount').textContent='RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2})}
+    else totalB.style.display='none';
+    document.getElementById('submitBtn').textContent=total>0?'📨 Hantar RSVP & Bayar (RM '+total+')':'📨 Hantar RSVP';
+  }else{
+    paxG.style.display='none';accoG.style.display='none';totalB.style.display='none';
+    document.getElementById('submitBtn').textContent='📨 Hantar RSVP';
+  }
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+
+async function submitRSVP(e){
+  e.preventDefault();
+  const btn=document.getElementById('submitBtn');
+  const name=document.getElementById('rsvp-name').value.trim();
+  const phone=document.getElementById('rsvp-phone').value.trim();
+  const attendance=document.getElementById('rsvp-attendance').value;
+  const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
+  const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
+  const message=document.getElementById('rsvp-message').value.trim();
+
+  if(!name||!phone||!attendance){showToast('⚠️ Sila isi ruangan wajib');return}
+
+  const amount=(attendance==='hadir')?(pax*pricePax)+(acco*priceAcco):0;
+
+  btn.disabled=true;btn.textContent='⏳ Menghantar...';
+
+  try{
+    const res=await fetch(API_RSVP,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()})
+    });
+    const data=await res.json();
+
+    document.getElementById('rsvpForm').style.display='none';
+    document.getElementById('rsvpSuccess').style.display='block';
+
+    if(data.checkoutUrl){
+      document.getElementById('rsvpDoneMsg').textContent='Sila lengkapkan pembayaran untuk mengesahkan kehadiran.';
+      document.getElementById('checkoutLink').style.display='block';
+      document.getElementById('checkoutBtn').href=data.checkoutUrl;
+      // Auto-redirect to payment
+      setTimeout(()=>{window.open(data.checkoutUrl,'_blank')},1500);
+    }else{
+      document.getElementById('rsvpDoneMsg').textContent='Kehadiran anda telah direkodkan. Jumpa di majlis!';
+    }
+    document.getElementById('rsvpSuccess').scrollIntoView({behavior:'smooth'});
+  }catch(err){
+    showToast('❌ Ralat sambungan. Cuba lagi.');
+    btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP';
+  }
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+loadConfig();
+</script>
+</body>
+</html>

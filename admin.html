@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSVP Admin — Walimatulurus</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Infant:wght@300;400;500;600;700&family=Great+Vibes&family=Scheherazade+New:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --rose: #DB2777; --rose-dark: #BE185D; --rose-light: #FCE7F3;
+    --gold: #B45309; --gold-light: #FDE68A; --gold-soft: #FEF3C7;
+    --emerald: #0D9488; --emerald-dark: #0F766E; --emerald-light: #CCFBF1;
+    --white: #FFFBF5; --text: #831843; --text-muted: #9D174D; --ink: #4A0E2E;
+    --card: rgba(255,251,245,0.75); --border: rgba(219,39,119,0.12);
+    --border-gold: rgba(180,83,9,0.2);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:linear-gradient(160deg,#fce7f3 0%,#fef3c7 30%,#fffbf5 60%,#ccfbf1 100%);
+    min-height:100vh; color:var(--text);
+  }
+
+  #lockScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(160deg,#fce7f3 0%,#fef3c7 30%,#fffbf5 60%,#ccfbf1 100%)}
+  .lock-card{background:rgba(255,251,245,0.8);backdrop-filter:blur(20px);border:1px solid var(--border-gold);border-radius:24px;padding:48px 40px;text-align:center;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(180,83,9,0.08)}
+  .lock-card .icon{font-size:48px;margin-bottom:16px}
+  .lock-card h2{font-family:'Cormorant Infant',serif;font-size:28px;margin-bottom:8px}
+  .lock-card p{color:var(--text-muted);font-size:14px;margin-bottom:24px}
+  .lock-card input{width:100%;padding:14px 18px;border:1px solid var(--border-gold);border-radius:12px;font-size:16px;font-family:inherit;background:rgba(255,251,245,0.5);color:var(--text);outline:none}
+  .lock-card input:focus{border-color:var(--gold)}
+  .lock-card button{width:100%;margin-top:12px;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--rose),var(--rose-dark));color:white;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit}
+  .lock-card button:hover{opacity:0.9}
+  .error-msg{color:#dc2626;font-size:13px;margin-top:8px;display:none}
+
+  #dashboard{display:none;padding:16px 20px 40px;max-width:1100px;margin:0 auto}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--card);border-radius:14px;padding:4px;border:1px solid var(--border)}
+  .tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;color:var(--text-muted)}
+  .tab:hover{background:var(--rose-light)}
+  .tab.active{background:var(--rose);color:white}
+
+  .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .header h1{font-family:'Cormorant Infant',serif;font-size:28px;background:linear-gradient(135deg,var(--rose),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border-gold);background:var(--card);backdrop-filter:blur(10px);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
+  .btn:hover{background:var(--rose-light);border-color:var(--rose)}
+  .btn.active{background:var(--rose);color:white;border-color:var(--rose)}
+  .btn.save{background:var(--emerald);color:white;border-color:var(--emerald)}
+  .btn.export{background:var(--emerald);color:white;border-color:var(--emerald)}
+
+  .stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .stat-card{flex:1;min-width:120px;padding:16px 20px;background:rgba(255,251,245,0.8);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 12px rgba(180,83,9,0.04)}
+  .stat-card .num{font-family:'Cormorant Infant',serif;font-size:32px;font-weight:700}
+  .stat-card .label{font-size:12px;color:var(--text-muted);margin-top:2px}
+  .stat-card.hadir .num{color:var(--emerald)}
+  .stat-card.tidak .num{color:var(--rose)}
+  .stat-card.total .num{color:var(--gold)}
+
+  .table-wrap{background:rgba(255,251,245,0.75);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(180,83,9,0.06)}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--text-muted);background:rgba(252,231,243,0.3);border-bottom:1px solid var(--border)}
+  tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(219,39,119,0.06);color:var(--ink)}
+  tbody tr:hover{background:rgba(252,231,243,0.2)}
+  tbody tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .badge-hadir{background:var(--emerald-light);color:var(--emerald-dark)}
+  .badge-tidak{background:var(--rose-light);color:var(--rose-dark)}
+  .pax-chip{display:inline-block;padding:2px 8px;border-radius:20px;background:var(--gold-soft);color:var(--gold);font-weight:600;font-size:12px}
+  .phone-link{color:var(--emerald-dark);text-decoration:none;font-weight:500}
+  .phone-link:hover{text-decoration:underline}
+  .empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
+  .empty .icon{font-size:48px;margin-bottom:12px}
+  .refreshed{font-size:11px;color:var(--text-muted)}
+
+  /* Editor */
+  .panel{display:none}
+  .panel.active{display:block}
+  .editor-section{margin-bottom:16px}
+  .editor-section h3{font-family:'Cormorant Infant',serif;font-size:18px;color:var(--ink);margin-bottom:10px;padding-left:4px}
+  .editor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+  .field-group{background:rgba(255,251,245,0.7);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+  .field-group label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px}
+  .field-group input,.field-group textarea{width:100%;padding:10px 12px;background:rgba(255,251,245,0.8);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--ink);resize:vertical;outline:none;transition:border-color 0.2s}
+  .field-group input:focus,.field-group textarea:focus{border-color:var(--rose)}
+  .field-group textarea{min-height:60px}
+  .save-status{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;display:none}
+  .save-status.success{display:inline-block;background:var(--emerald-light);color:var(--emerald-dark)}
+  .save-status.error{display:inline-block;background:#fee2e2;color:#dc2626}
+
+  @media(max-width:768px){
+    .header{flex-direction:column;align-items:flex-start}
+    .editor-grid{grid-template-columns:1fr}
+    table{font-size:11px}
+    thead th,tbody td{padding:8px 10px}
+  }
+</style>
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="icon">🔐</div>
+    <h2>Akses Terhad</h2>
+    <p>Masukkan kata laluan</p>
+    <input type="password" id="password" placeholder="Kata laluan..." onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">Buka</button>
+    <div class="error-msg" id="errMsg">Kata laluan salah</div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <div class="header">
+    <h1>💍 Wedding Admin</h1>
+    <div class="header-right">
+      <span class="refreshed" id="refreshedAt"></span>
+      <button class="btn" onclick="refresh()">🔄 Segar</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('rsvp')">📋 Senarai RSVP</div>
+    <div class="tab" onclick="switchTab('editor')">✏️ Edit Kandungan</div>
+  </div>
+
+  <!-- RSVP Panel -->
+  <div class="panel active" id="panel-rsvp">
+    <div class="stats">
+      <div class="stat-card total"><div class="num" id="statTotal">-</div><div class="label">Jumlah</div></div>
+      <div class="stat-card hadir"><div class="num" id="statHadir">-</div><div class="label">Hadir</div></div>
+      <div class="stat-card tidak"><div class="num" id="statTidak">-</div><div class="label">Tidak</div></div>
+      <div class="stat-card"><div class="num" id="statPax">-</div><div class="label">Pax</div></div>
+    </div>
+    <div class="header-right" style="margin-bottom:14px">
+      <button class="btn active" id="filterAll" onclick="setFilter('all')">Semua</button>
+      <button class="btn" id="filterHadir" onclick="setFilter('hadir')">✅ Hadir</button>
+      <button class="btn" id="filterTidak" onclick="setFilter('tidak')">❌ Tidak</button>
+      <button class="btn export" onclick="exportCSV()">📥 CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Nama</th><th>Telefon</th><th>Kehadiran</th><th>Pax</th><th>Ucapan</th><th>Tarikh</th></tr></thead>
+        <tbody id="rsvpBody"><tr><td colspan="7" class="empty"><div class="icon">⏳</div>Memuatkan...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Editor Panel -->
+  <div class="panel" id="panel-editor">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span style="font-size:13px;color:var(--text-muted)">Edit kandungan — perubahan terus ke laman depan</span>
+      <div>
+        <span class="save-status" id="saveStatus"></span>
+        <button class="btn save" onclick="saveConfig()">💾 Simpan</button>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>👰 Pengantin</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Nama Perempuan</label><input id="cfg-bride_name" placeholder="Pengantin Perempuan"></div>
+        <div class="field-group"><label>Nama Lelaki</label><input id="cfg-groom_name" placeholder="Pengantin Lelaki"></div>
+        <div class="field-group"><label>Label Cover</label><input id="cfg-cover_label" placeholder="Walimatulurus"></div>
+        <div class="field-group"><label>Page Title</label><input id="cfg-page_title" placeholder="Jemputan Walimatulurus"></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>📖 Kandungan Hero</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Label Atas</label><input id="cfg-hero_label" placeholder="Dengan Penuh Kesyukuran"></div>
+        <div class="field-group"><label>Ayat Al-Quran</label><textarea id="cfg-hero_verse" placeholder="Ayat..."></textarea></div>
+        <div class="field-group"><label>Rujukan Ayat</label><input id="cfg-hero_verse_ref" placeholder="Surah Ar-Rum, Ayat 21"></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>📅 Tarikh & Masa</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Tarikh Majlis (ISO)</label><input id="cfg-wedding_date" placeholder="2026-11-01T10:00:00+08:00"></div>
+        <div class="field-group"><label>Tarikh Akhir RSVP</label><input id="cfg-rsvp_deadline" placeholder="25 Oktober 2026"></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🤝 Majlis 1 — Akad Nikah</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Jenis Majlis (emoji)</label><input id="cfg-event1_type" placeholder="🤝 Majlis Akad Nikah"></div>
+        <div class="field-group"><label>Nama</label><input id="cfg-event1_name" placeholder="Akad Nikah"></div>
+        <div class="field-group"><label>Tarikh</label><input id="cfg-event1_date" placeholder="Sabtu, 1 November 2026"></div>
+        <div class="field-group"><label>Masa</label><input id="cfg-event1_time" placeholder="10:00 Pagi — 12:00 Tengahari"></div>
+        <div class="field-group"><label>Lokasi</label><input id="cfg-event1_location" placeholder="Masjid Putra, Putrajaya"></div>
+        <div class="field-group"><label>Alamat Penuh</label><input id="cfg-event1_address" placeholder="Jalan Tuanku Abdul Rahman, Presint 1"></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🍽️ Majlis 2 — Resepsi</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Jenis Majlis (emoji)</label><input id="cfg-event2_type" placeholder="🍽️ Majlis Resepsi"></div>
+        <div class="field-group"><label>Nama</label><input id="cfg-event2_name" placeholder="Jamuan Makan"></div>
+        <div class="field-group"><label>Tarikh</label><input id="cfg-event2_date" placeholder="Sabtu, 1 November 2026"></div>
+        <div class="field-group"><label>Masa</label><input id="cfg-event2_time" placeholder="12:30 Tengahari — 5:00 Petang"></div>
+        <div class="field-group"><label>Lokasi</label><input id="cfg-event2_location" placeholder="Dewan Serbaguna, Presint 9"></div>
+        <div class="field-group"><label>Alamat Penuh</label><input id="cfg-event2_address" placeholder="Jalan P9E, Presint 9, Putrajaya"></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🗺️ Peta & Galeri</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Google Maps Embed URL</label><textarea id="cfg-map_url" placeholder="https://www.google.com/maps/embed?..."></textarea></div>
+        <div class="field-group"><label>Gambar #1 URL</label><input id="cfg-gallery_1" placeholder="https://..."></div>
+        <div class="field-group"><label>Gambar #2 URL</label><input id="cfg-gallery_2" placeholder="https://..."></div>
+        <div class="field-group"><label>Gambar #3 URL</label><input id="cfg-gallery_3" placeholder="https://..."></div>
+        <div class="field-group"><label>Gambar #4 URL</label><input id="cfg-gallery_4" placeholder="https://..."></div>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🕌 Doa & Footer</h3>
+      <div class="editor-grid">
+        <div class="field-group"><label>Doa (Arabic)</label><textarea id="cfg-doa_arabic" placeholder="بَارَكَ اللَّهُ..."></textarea></div>
+        <div class="field-group"><label>Doa (Maksud)</label><textarea id="cfg-doa_meaning" placeholder="Maksud doa..."></textarea></div>
+        <div class="field-group"><label>Sumber Doa</label><input id="cfg-doa_source" placeholder="Hadis Riwayat Abu Dawud"></div>
+        <div class="field-group"><label>Footer — Thanks (Arab)</label><input id="cfg-footer_thanks" placeholder="جَزَاكُمُ اللَّهُ خَيْرًا"></div>
+        <div class="field-group"><label>Footer — Teks</label><input id="cfg-footer_text" placeholder="Terima kasih kerana sudi meraikan majlis kami."></div>
+        <div class="field-group"><label>Footer — Kecil</label><input id="cfg-footer_small" placeholder="Keluarga Pengantin"></div>
+      </div>
+    </div>
+
+    <div style="text-align:right;margin-top:20px">
+      <span class="save-status" id="saveStatus2"></span>
+      <button class="btn save" onclick="saveConfig()">💾 Simpan Semua</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_RSVP = 'https://www.jayibrahimalislam.com/api/rsvp?secret=rsvp2026';
+const API_CONFIG = 'https://www.jayibrahimalislam.com/api/wedding-config';
+const PASSWORD = 'rsvp2026';
+let allData=[], currentFilter='all', configData={};
+
+// ─── LOCK ───
+function unlock(){
+  if(document.getElementById('password').value===PASSWORD){
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('errMsg').style.display='none';
+    refresh(); loadConfig();
+  }else{document.getElementById('errMsg').style.display='block';document.getElementById('password').value=''}
+}
+
+// ─── TABS ───
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
+}
+
+// ─── RSVP ───
+async function refresh(){
+  try{
+    const res=await fetch(API_RSVP),json=await res.json();
+    allData=json.rsvps||[];
+    document.getElementById('refreshedAt').textContent='Dikemaskini: '+new Date().toLocaleTimeString('ms-MY');
+    render(currentFilter);
+  }catch(e){
+    document.getElementById('rsvpBody').innerHTML='<tr><td colspan="7" class="empty"><div class="icon">❌</div>Gagal sambung</td></tr>';
+  }
+}
+
+function setFilter(f){
+  currentFilter=f;
+  ['all','hadir','tidak'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));
+  document.getElementById('filter'+(f==='all'?'All':f==='hadir'?'Hadir':'Tidak')).classList.add('active');
+  render(f);
+}
+
+function render(filter){
+  let data=allData;
+  if(filter==='hadir')data=data.filter(d=>d.attendance==='hadir');
+  if(filter==='tidak')data=data.filter(d=>d.attendance!=='hadir');
+  const hadir=allData.filter(d=>d.attendance==='hadir');
+  const totalPax=hadir.reduce((s,d)=>s+(parseInt(d.pax)||0),0);
+  document.getElementById('statTotal').textContent=allData.length;
+  document.getElementById('statHadir').textContent=hadir.length;
+  document.getElementById('statTidak').textContent=allData.length-hadir.length;
+  document.getElementById('statPax').textContent=totalPax;
+  if(!data.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="7" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
+  document.getElementById('rsvpBody').innerHTML=data.map((d,i)=>`<tr>
+    <td>${d.id}</td><td><strong>${esc(d.name)}</strong></td>
+    <td><a class="phone-link" href="https://wa.me/6${esc(d.phone.replace(/[^0-9]/g,''))}">${esc(d.phone)}</a></td>
+    <td><span class="badge ${d.attendance==='hadir'?'badge-hadir':'badge-tidak'}">${d.attendance==='hadir'?'✅ Hadir':'❌ Tidak'}</span></td>
+    <td><span class="pax-chip">${d.pax||'1'} pax</span></td>
+    <td>${esc(d.message||'-')}</td>
+    <td>${d.timestamp?new Date(d.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td>
+  </tr>`).join('');
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+function exportCSV(){
+  const rows=[['ID','Nama','Telefon','Kehadiran','Pax','Ucapan','Tarikh']];
+  allData.forEach(d=>rows.push([d.id,d.name,d.phone,d.attendance,d.pax,d.message,d.timestamp]));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='rsvp-export.csv';a.click()
+}
+
+// ─── EDITOR ───
+async function loadConfig(){
+  try{
+    const res=await fetch(API_CONFIG),json=await res.json();
+    configData=json.config||{};
+    Object.entries(configData).forEach(([k,v])=>{
+      const el=document.getElementById('cfg-'+k);
+      if(el)el.value=v;
+    });
+  }catch(e){console.error('Gagal load config',e)}
+}
+
+async function saveConfig(){
+  const el=document.getElementById('saveStatus'),el2=document.getElementById('saveStatus2');
+  const formData=new URLSearchParams();
+  formData.append('secret','rsvp2026');
+  document.querySelectorAll('[id^="cfg-"]').forEach(el=>{formData.append('cfg_'+el.id.replace('cfg-',''),el.value)});
+  try{
+    const res=await fetch(API_CONFIG,{
+      method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:formData.toString()
+    });
+    const json=await res.json();
+    if(json.success){
+      [el,el2].forEach(e=>{e.className='save-status success';e.textContent='✅ Tersimpan! '+json.updated+' keys'});
+    }else{
+      [el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ '+json.error});
+    }
+    setTimeout(()=>[el,el2].forEach(e=>e.className='save-status'),3000);
+  }catch(e){
+    [el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ Gagal'});
+  }
+}
+</script>
+</body>
+</html>
