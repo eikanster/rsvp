@@ -4,12 +4,70 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSVP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, #DB2777, #B45309, #0D9488, #831843);
+    background-size: 400% 400%;
+    animation: bgShift 8s ease infinite;
+    overflow:hidden;
+  }
+
+  @keyframes bgShift {
+    0%   { background-position: 0% 50%; }
+    25%  { background-position: 100% 0%; }
+    50%  { background-position: 100% 100%; }
+    75%  { background-position: 0% 100%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .orb {
+    position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none;
+  }
+  .orb-1 { width:400px; height:400px; background:rgba(219,39,119,0.15); top:-100px; left:-80px; animation:float 6s ease-in-out infinite; }
+  .orb-2 { width:300px; height:300px; background:rgba(13,148,136,0.12); bottom:-60px; right:-60px; animation:float 8s ease-in-out infinite reverse; }
+  .orb-3 { width:250px; height:250px; background:rgba(253,230,138,0.1); top:50%; left:50%; animation:float 7s ease-in-out infinite 2s; }
+
+  @keyframes float {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-20px) scale(1.1); }
+    66% { transform: translate(-20px,15px) scale(0.9); }
+  }
+
+  h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(4rem, 12vw, 8rem);
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 4px 40px rgba(0,0,0,0.2);
+    position:relative; z-index:1;
+    animation: dance 1.5s ease-in-out infinite;
+    cursor:default;
+    user-select:none;
+  }
+
+  @keyframes dance {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    25%  { transform: translateY(-8px) rotate(1deg); }
+    50%  { transform: translateY(-4px) rotate(-0.5deg); }
+    75%  { transform: translateY(-12px) rotate(0.5deg); }
+  }
+</style>
 </head>
-<body style="display:none">
-<!-- Landing only - redirect based on hostname -->
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<h1>RSVP</h1>
+
 <script>
-if (location.hostname.startsWith('dinner')) location.replace('/dinner');
-else location.replace('/wedding');
+setTimeout(() => {
+  if (location.hostname.startsWith('dinner')) location.replace('/dinner');
+  else location.replace('/wedding');
+}, 1500);
 </script>
 </body>
 </html>
