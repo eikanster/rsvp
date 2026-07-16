@@ -1,0 +1,7 @@
+name = "rsvp"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jayibrahim-db"
+database_id = "390d34a7-3395-463b-8e2e-1570ac611030"
