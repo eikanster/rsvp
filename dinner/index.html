@@ -788,8 +788,13 @@
       <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
     </div>
     <!-- SECTION: Pembayaran Success View (Conditional) -->
-    <div class="card conditional" id="pembayaranCard" style="display:none; margin-top:20px; background:rgba(255, 255, 255, 0.05); border:1px solid var(--line);">
+    <div class="card" id="pembayaranCard" style="display:none; margin-top:20px; background:rgba(255, 255, 255, 0.05); border:1px solid var(--line);">
       <div class="sec-title" style="margin-top:0;"><span class="sec-num">💳</span>Pembayaran (CIMB)</div>
+      
+      <div id="payment-image-container" style="display:none; text-align:center; margin-bottom:14px;">
+        <img id="payment-image-display" src="" style="max-width:100%; max-height:220px; border-radius:10px; border:1px solid var(--line);">
+      </div>
+
       <p style="font-size:13px;color:var(--gold);margin-bottom:12px;opacity:0.9;line-height:1.6;text-align:left;">
         Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi di bawah atau hubungi WhatsApp kami.
       </p>
@@ -1184,6 +1189,15 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
           if(cfg.bank_acc_no)document.getElementById('bank-acc-no-display').textContent = cfg.bank_acc_no;
           if(cfg.bank_acc_name)document.getElementById('bank-acc-name-display').textContent = cfg.bank_acc_name;
           
+          const qrImg = document.getElementById('payment-image-display');
+          const qrContainer = document.getElementById('payment-image-container');
+          if(cfg.payment_image_url && qrImg && qrContainer){
+            qrImg.src = cfg.payment_image_url;
+            qrContainer.style.display = 'block';
+          } else if(qrContainer){
+            qrContainer.style.display = 'none';
+          }
+
           const waNum = cfg.contact_phone || '60123456789';
           const template = `Salam, saya ${name} (${phone}). Di bawah adalah resit pembayaran untuk RSVP Majlis Makan Malam.\n\nID Rujukan: DINNER-${data.id || ''}\nJumlah: RM ${amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}`;
           document.getElementById('payment-wa-btn').href = `https://wa.me/${waNum.replace(/[^0-9]/g,'')}?text=` + encodeURIComponent(template);

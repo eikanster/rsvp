@@ -153,10 +153,11 @@
       <div class="field-group"><label>Nama Kontak</label><input id="cfg-contact_name"></div>
       <div class="field-group"><label>No. Telefon</label><input id="cfg-contact_phone"></div>
     </div></div>
-    <div class="editor-section"><h3>🏦 Butiran Bank (Manual CIMB Transfer)</h3><div class="editor-grid">
+    <div class="editor-section"><h3>🏦 Butiran Bank & QR Pembayaran</h3><div class="editor-grid">
       <div class="field-group"><label>Nama Bank</label><input id="cfg-bank_name"></div>
       <div class="field-group"><label>No. Akaun Bank</label><input id="cfg-bank_acc_no"></div>
       <div class="field-group"><label>Nama Pemegang Akaun</label><input id="cfg-bank_acc_name"></div>
+      <div class="field-group"><label>Gambar QR / Pembayaran</label><div class="gallery-upload"><input id="cfg-payment_image_url"><input type="file" accept="image/*" onchange="uploadPaymentImage(this)"><button type="button" class="btn upload-btn" onclick="this.previousElementSibling.click()">📤</button></div></div>
     </div></div>
     <div style="text-align:right;margin-top:20px">
       <span class="save-status" id="saveStatus2"></span><button class="btn save" onclick="saveConfig()">💾 Simpan Semua</button>
@@ -219,6 +220,37 @@ async function saveConfig(){
     if(j.success){[el,el2].forEach(e=>{e.className='save-status success';e.textContent='✅ Tersimpan!'})}else{[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ '+j.error})}
     setTimeout(()=>[el,el2].forEach(e=>e.className='save-status'),3000)
   }catch(e){[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ Gagal'})}
+}
+
+// ─── PAYMENT QR UPLOAD ───
+async function uploadPaymentImage(input){
+  const file = input.files[0];
+  if(!file) return;
+  const btn = input.nextElementSibling;
+  const urlInput = document.getElementById('cfg-payment_image_url');
+  btn.textContent='⏳'; btn.classList.add('uploading');
+
+  try{
+    const blob = await compressImage(file, 1000, 0.85);
+    const fd = new FormData();
+    fd.append('file', blob, 'payment_qr.webp');
+
+    const res = await fetch('/api/upload?category=dinner', {method:'POST',body:fd});
+    const data = await res.json();
+
+    if(data.url){
+      urlInput.value = data.url;
+      btn.textContent='✅';
+      setTimeout(()=>{btn.textContent='📤';btn.classList.remove('uploading')},2000);
+    }else{
+      throw new Error(data.error||'Upload failed');
+    }
+  }catch(e){
+    btn.textContent='❌';
+    setTimeout(()=>{btn.textContent='📤';btn.classList.remove('uploading')},2000);
+    console.error('Upload error:',e);
+  }
+  input.value='';
 }
 
 // ─── BACKGROUND UPLOAD ───
