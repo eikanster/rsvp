@@ -2,173 +2,230 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Majlis Santapan Malam</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap');
-
-  :root {
-    --bg: #FFFDF5;
-    --card: #FFFFFF;
-    --green: #0D6E6E; --green-dark: #0A5555; --green-light: #E6F2F2;
-    --gold: #B8860B; --gold-light: #F5DEB3; --gold-dark: #8B6508;
-    --text: #1A1A1A; --text-muted: #6B5B4F;
-    --border: #E8E0D5; --border-gold: #D4C5A0;
-    --shadow: 0 2px 16px rgba(0,0,0,0.06);
-    --shadow-hover: 0 4px 24px rgba(0,0,0,0.1);
+  :root{
+    --ink:#1c2b24;
+    --paper:#f6f3ec;
+    --deep:#0D6E6E;
+    --deep-2:#0A5555;
+    --gold:#B8860B;
+    --gold-soft:#F5DEB3;
+    --line:#d8d0bd;
+    --danger:#a3402f;
+    --ok:#3f7a5c;
+    --radius:14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
-
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family:'Plus Jakarta Sans',sans-serif;
-    background:var(--bg); color:var(--text);
-    overflow-x:hidden; -webkit-tap-highlight-color:transparent;
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    padding-bottom:100px;
+    -webkit-tap-highlight-color:transparent;
   }
-
-  .container{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 20px}
-  .sec-head{text-align:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--green-dark);margin:8px 0 20px}
-  .divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--gold);font-size:0.5rem;opacity:0.5}
-  .divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent)}
-  .gold-text{color:var(--gold);font-weight:600}
 
   /* COVER */
   .cover{
     position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
-    background:linear-gradient(160deg,var(--green-dark) 0%,#063838 50%,var(--green-dark) 100%);
-    transition:transform 0.8s cubic-bezier(0.7,0,0.3,1),opacity 0.8s;
+    background:linear-gradient(160deg,var(--deep-2),#063838);
+    transition:transform 0.8s cubic-bezier(0.7,0,0.3,1);
   }
-  .cover.revealed{transform:translateY(-100%);opacity:0;pointer-events:none}
-  .cover-logo{font-size:64px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .cover-company{font-size:0.7rem;letter-spacing:8px;text-transform:uppercase;color:var(--gold-light);margin-bottom:24px;font-weight:500}
-  .cover-title{font-family:'Playfair Display',serif;font-size:2.6rem;color:#FFFFFF;text-align:center;line-height:1.2;margin-bottom:8px}
-  .cover-sub{font-size:0.85rem;color:rgba(255,255,255,0.7);text-align:center;max-width:320px;margin-bottom:40px;line-height:1.6}
+  .cover.revealed{transform:translateY(-100%);pointer-events:none}
+  .cover-logo{font-size:56px;margin-bottom:16px;animation:pulse 3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .cover-company{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:20px;font-weight:600}
+  .cover-title{font-size:28px;color:#fff;text-align:center;line-height:1.3;margin-bottom:6px;font-weight:700}
+  .cover-sub{font-size:13px;color:rgba(255,255,255,0.65);text-align:center;max-width:300px;margin-bottom:36px;line-height:1.6}
   .btn-reveal{
-    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-    border:none;color:#fff;padding:16px 48px;font-size:1rem;
-    font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
-    border-radius:60px;cursor:pointer;letter-spacing:2px;
-    text-transform:uppercase;transition:all 0.3s;
-    box-shadow:0 4px 24px rgba(184,134,11,0.4);
+    background:linear-gradient(135deg,var(--gold),#8B6508);
+    border:none;color:#fff;padding:15px 44px;font-size:15px;
+    font-weight:700;border-radius:60px;cursor:pointer;
+    letter-spacing:1px;box-shadow:0 4px 20px rgba(184,134,11,0.35);
   }
-  .btn-reveal:hover{transform:scale(1.03)}
   .btn-reveal:active{transform:scale(0.96)}
 
-  /* HERO */
-  .hero{text-align:center;padding:60px 0 30px}
-  .hero-company{font-size:0.7rem;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
-  .hero-title{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--green-dark);line-height:1.15;margin-bottom:16px}
-  .hero-msg{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text-muted);font-style:italic;line-height:1.7;max-width:400px;margin:0 auto}
+  /* HEADER */
+  header{
+    background:linear-gradient(160deg,var(--deep),var(--deep-2));
+    color:var(--gold-soft);
+    padding:24px 20px 18px;
+    position:relative;overflow:hidden;
+  }
+  header::after{
+    content:"";position:absolute;
+    right:-30px;top:-30px;
+    width:140px;height:140px;
+    border:1px solid rgba(245,222,179,0.15);
+    border-radius:50%;
+  }
+  header .eyebrow{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
+  header h1{margin:0;font-size:20px;font-weight:700;color:#fbf8f1}
+  header p{margin:4px 0 0;font-size:12px;color:#cfd9d2}
 
-  /* EVENT CARD */
-  .event-card{
-    background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;
-    margin:16px 0;box-shadow:var(--shadow);
-  }
-  .event-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #f0ebe0}
-  .event-row:last-child{border-bottom:none}
-  .event-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
-  .event-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:2px;font-weight:600}
-  .event-value{font-size:0.95rem;color:var(--text);font-weight:500}
+  main{max-width:520px;margin:0 auto;padding:12px 16px;}
 
-  /* PRICE CARDS */
-  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
-  .price-card{
-    background:var(--card);border:2px solid var(--border);border-radius:14px;padding:20px 16px;
-    text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow);
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 14px;
+    margin-bottom:12px;
   }
-  .price-card:hover{border-color:var(--gold)}
-  .price-card.selected{border-color:var(--green);background:var(--green-light);box-shadow:0 0 0 3px rgba(13,110,110,0.15)}
-  .price-card .label{font-size:0.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
-  .price-card .amount{font-family:'Playfair Display',serif;font-size:2rem;color:var(--green-dark);font-weight:700}
-  .price-card .desc{font-size:0.7rem;color:var(--text-muted);margin-top:2px}
+  .sec-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--deep);color:var(--gold-soft);
+    font-size:12px;font-weight:700;margin-right:8px;
+    flex-shrink:0;
+  }
+  .sec-title{
+    font-size:14px;font-weight:700;color:var(--deep);
+    display:flex;align-items:center;margin-bottom:12px;
+  }
 
-  /* FORM */
-  .form-group{margin-bottom:14px}
-  .form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text);margin-bottom:6px}
-  .form-label .req{color:#C62828}
-  .form-input,.form-select,.form-textarea{
-    width:100%;padding:13px 16px;background:var(--bg);
-    border:1.5px solid var(--border);border-radius:10px;
-    font-size:0.9rem;font-family:inherit;color:var(--text);
-    transition:all 0.2s;outline:none;
+  label.field{
+    display:block;font-size:12px;font-weight:600;
+    color:#5a5449;margin-bottom:5px;margin-top:12px;
   }
-  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(13,110,110,0.08)}
-  .form-textarea{min-height:70px;resize:vertical}
+  label.field:first-of-type{margin-top:0}
 
-  .btn-submit{
-    width:100%;padding:16px;background:linear-gradient(135deg,var(--green),var(--green-dark));
-    color:#fff;border:none;border-radius:12px;
-    font-size:1rem;font-family:inherit;font-weight:700;
-    letter-spacing:1px;cursor:pointer;
-    box-shadow:0 4px 20px rgba(13,110,110,0.2);transition:all 0.2s;
+  input[type=text],input[type=tel],textarea,select{
+    width:100%;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;
+    font-size:15px;background:#fcfbf8;
+    color:var(--ink);font-family:inherit;
   }
-  .btn-submit:hover{transform:scale(1.01)}
-  .btn-submit:disabled{opacity:0.5;transform:none;cursor:not-allowed}
+  input:focus,textarea:focus,select:focus{
+    outline:none;border-color:var(--deep);background:#fff;
+  }
+  textarea{resize:vertical;min-height:60px;}
 
-  /* RSVP */
-  .rsvp-section{
-    background:var(--card);border:2px solid var(--border-gold);border-radius:16px;
-    padding:32px 24px;margin:24px 0;box-shadow:var(--shadow);
+  /* PILLS */
+  .pill-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{
+    flex:1;min-width:100px;
+    border:1px solid var(--line);
+    border-radius:10px;padding:10px 8px;
+    text-align:center;font-size:13px;font-weight:600;
+    color:var(--deep);background:#fcfbf8;
+    cursor:pointer;user-select:none;transition:.15s;
   }
-  .rsvp-title{text-align:center;font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--green-dark);margin-bottom:4px}
-  .rsvp-sub{text-align:center;font-size:0.8rem;color:var(--text-muted);margin-bottom:24px}
-  .rsvp-done{display:none;text-align:center;padding:16px 0}
-  .rsvp-done .icon{font-size:52px;margin-bottom:12px}
-  .rsvp-done h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--green-dark)}
-  .rsvp-done p{font-size:0.85rem;color:var(--text-muted);margin-top:4px}
-  .rsvp-done .checkout{margin-top:14px}
-  .rsvp-done .checkout a{
-    display:inline-block;background:var(--green);color:#fff;padding:12px 28px;
-    border-radius:10px;text-decoration:none;font-weight:700;transition:transform 0.2s;
-  }
-  .rsvp-done .checkout a:hover{transform:scale(1.03)}
+  .pill input{display:none;}
+  .pill.active{background:var(--deep);border-color:var(--deep);color:#fbf8f1;}
+  .pill.hadir.active{background:var(--ok);border-color:var(--ok)}
+  .pill.tidak.active{background:#7a6a4f;border-color:#7a6a4f}
+  .pill.acco.active{background:var(--gold);border-color:var(--gold);color:#3a2c10}
 
-  .done-icon{font-size:52px;margin-bottom:8px}
-  .done-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:20px}
-  .summary-card{
-    background:var(--green-light);border:1px solid rgba(13,110,110,0.15);
-    border-radius:12px;padding:16px 20px;margin:0 auto 16px;max-width:360px;text-align:left;
+  .cost-line{
+    display:flex;justify-content:space-between;
+    font-size:13px;padding:6px 0;
+    border-bottom:1px solid #eee6d5;
   }
-  .summary-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(13,110,110,0.06)}
-  .summary-row:last-child{border-bottom:none}
-  .slabel{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);font-weight:600;flex-shrink:0}
-  .svalue{font-size:0.85rem;color:var(--text);font-weight:500;text-align:right}
-  .svalue.amount{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green-dark);font-weight:700}
-  .svalue.ref{font-family:monospace;font-size:0.78rem;color:var(--gold-dark);font-weight:600}
+  .cost-line:last-child{border-bottom:none}
+  .cost-line.total{
+    font-weight:700;color:var(--deep);font-size:14.5px;
+    padding-top:8px;border-top:2px solid var(--deep);margin-top:2px;
+  }
+  .cost-card{background:#fbf7ec;border:1px solid var(--gold-soft)}
+  .cost-card .sec-title{color:var(--gold)}
+  .cost-card .sec-num{background:var(--gold);color:#3a2c10}
 
-  .total-box{
-    background:var(--green-light);border:1px solid rgba(13,110,110,0.2);
-    border-radius:10px;padding:12px 16px;margin-top:14px;
-    display:flex;justify-content:space-between;align-items:center;
-  }
-  .total-box .label{font-size:0.8rem;color:var(--green-dark);font-weight:600}
-  .total-box .amount{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--green-dark);font-weight:700}
+  .conditional{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .conditional.open{max-height:600px}
 
   /* MAP */
-  .map-wrap{border-radius:14px;overflow:hidden;margin:16px 0;box-shadow:var(--shadow)}
-  .map-wrap iframe{width:100%;height:220px;border:none;display:block}
+  .map-wrap{border-radius:var(--radius);overflow:hidden;margin-top:8px}
+  .map-wrap iframe{width:100%;height:180px;border:none;display:block}
 
   /* GALLERY */
-  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:16px 0}
-  .gallery-item{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+  .gallery-item{
+    aspect-ratio:1;border-radius:10px;overflow:hidden;
+    background:#f0ece0;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
   .gallery-item img{width:100%;height:100%;object-fit:cover}
-  .gallery-placeholder{font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-align:center;opacity:0.4}
+  .gallery-placeholder{font-size:10px;color:#8a8270;letter-spacing:1px;opacity:0.4}
+
+  .note{
+    font-size:11px;color:var(--gold);background:#fbf7ec;
+    border:1px dashed var(--gold-soft);border-radius:8px;
+    padding:8px 10px;margin-top:8px;line-height:1.4;
+  }
 
   /* FOOTER */
-  .footer{text-align:center;padding:40px 0 32px;color:var(--text-muted);font-size:0.8rem;line-height:2.2}
-  .footer-brand{font-size:1.1rem;color:var(--green-dark);font-family:'Playfair Display',serif;font-weight:600}
+  .footer{text-align:center;padding:32px 0 24px;color:#8a8270;font-size:12px;line-height:2}
+  .footer-brand{font-size:15px;color:var(--deep);font-weight:700}
 
-  /* TOAST */
-  .toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 24px;border-radius:60px;font-size:0.8rem;z-index:1001;opacity:0;pointer-events:none;transition:opacity 0.3s;font-weight:500}
-  .toast.show{opacity:1}
-
-  @media(max-width:480px){
-    .cover-title{font-size:1.8rem}
-    .hero-title{font-size:1.6rem}
-    .price-grid{grid-template-columns:1fr}
+  /* SUBMIT BAR */
+  .submit-bar{
+    position:fixed;bottom:0;left:0;right:0;
+    background:#fff;border-top:1px solid var(--line);
+    padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom));
+    z-index:50;
   }
+  .submit-bar-inner{max-width:520px;margin:0 auto}
+  .btn-submit{
+    width:100%;background:var(--deep);color:#fbf8f1;
+    border:none;border-radius:12px;padding:14px;
+    font-size:15px;font-weight:700;cursor:pointer;
+  }
+  .btn-submit:active{background:var(--deep-2)}
+  .btn-submit:disabled{opacity:0.5}
+  .err-text{color:var(--danger);font-size:11px;margin-top:8px;display:none}
+
+  /* SUCCESS */
+  .success-view{display:none;text-align:center;padding:20px 0}
+  .done-icon{font-size:48px;margin-bottom:8px}
+  .success-view h3{font-size:18px;color:var(--deep);margin-bottom:4px}
+  .done-sub{font-size:13px;color:#8a8270;margin-bottom:18px}
+  .summary-card{
+    background:#eaf3f0;border:1px solid rgba(13,110,110,0.12);
+    border-radius:12px;padding:14px 16px;margin:0 auto 14px;
+    max-width:340px;text-align:left;
+  }
+  .summary-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(13,110,110,0.06)}
+  .summary-row:last-child{border-bottom:none}
+  .slabel{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--deep);font-weight:600}
+  .svalue{font-size:13px;color:var(--ink);font-weight:500;text-align:right}
+  .svalue.amount{font-size:16px;color:var(--deep);font-weight:700}
+  .svalue.ref{font-family:monospace;font-size:12px;color:var(--gold)}
+
+  .checkout-btn{
+    display:inline-block;background:var(--deep);color:#fff;
+    padding:12px 28px;border-radius:10px;text-decoration:none;
+    font-weight:700;font-size:14px;margin-top:8px;
+  }
+  .checkout-btn:active{opacity:0.8}
+  .checkout-hint{font-size:10px;color:#8a8270;margin-top:6px}
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(15,43,33,0.55);
+    display:none;align-items:center;justify-content:center;
+    z-index:60;padding:20px;
+  }
+  .modal-overlay.open{display:flex}
+  .modal{
+    background:#fff;border-radius:16px;
+    max-width:400px;width:100%;
+    max-height:80vh;overflow-y:auto;padding:20px;
+  }
+  .modal h2{margin:0 0 2px;font-size:16px;color:var(--deep)}
+  .modal .sub{font-size:12px;color:#8a8270;margin-bottom:12px}
+  .row-line{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px solid #f0ece0}
+  .row-line span:first-child{color:#8a8270;flex-shrink:0}
+  .row-line span:last-child{text-align:right;font-weight:600;color:var(--ink)}
+  .modal-actions{display:flex;gap:8px;margin-top:14px}
+  .modal-actions button{flex:1;border-radius:10px;padding:12px;font-size:13px;font-weight:700;border:none;cursor:pointer}
+  .btn-cancel{background:#f0ece0;color:#5a5449}
+  .btn-confirm{background:var(--deep);color:#fff}
+  .btn-confirm.loading{opacity:0.6;pointer-events:none}
+
+  @media(max-width:400px){.cover-title{font-size:24px}}
 </style>
 </head>
 <body>
@@ -176,155 +233,169 @@
 <!-- COVER -->
 <div class="cover" id="cover">
   <div class="cover-logo">🕋</div>
-  <div class="cover-company" id="cover-company">Syarikat ABC Sdn Bhd</div>
+  <div class="cover-company" id="cover-company">Syarikat ABC</div>
   <div class="cover-title" id="cover-title">Majlis Santapan<br>Malam Apresiasi</div>
-  <div class="cover-sub" id="cover-sub">Dengan penuh rasa syukur, kami menjemput anda ke majlis santapan malam tahunan.</div>
+  <div class="cover-sub" id="cover-sub">Dengan penuh rasa syukur, kami menjemput anda</div>
   <button class="btn-reveal" onclick="reveal()">✨ Buka Jemputan</button>
 </div>
 
-<div class="container">
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-company" id="hero-company">Syarikat ABC Sdn Bhd</div>
-    <h1 class="hero-title" id="hero-title">Majlis Santapan Malam Apresiasi</h1>
-    <p class="hero-msg" id="hero-msg">Meriahkan malam penuh kenangan bersama kami.</p>
-  </section>
+<!-- CONTENT -->
+<header>
+  <div class="eyebrow" id="header-company">Syarikat ABC Sdn Bhd</div>
+  <h1 id="header-title">Majlis Santapan Malam Apresiasi</h1>
+  <p id="header-msg">Meriahkan malam penuh kenangan bersama kami</p>
+</header>
 
-  <div class="divider">✦</div>
+<main id="mainView">
 
-  <!-- EVENT -->
-  <div class="event-card">
-    <div class="event-row">
-      <div class="event-icon">📅</div>
-      <div><div class="event-label">Tarikh</div><div class="event-value" id="ev-date">Sabtu, 5 Disember 2026</div></div>
-    </div>
-    <div class="event-row">
-      <div class="event-icon">⏰</div>
-      <div><div class="event-label">Masa</div><div class="event-value" id="ev-time">7:30 Malam — 11:00 Malam</div></div>
-    </div>
-    <div class="event-row">
-      <div class="event-icon">📍</div>
-      <div><div class="event-label">Lokasi</div><div class="event-value" id="ev-loc">Dewan Serbaguna, Hotel Istana</div><div style="font-size:0.75rem;color:var(--text-muted)" id="ev-addr">73, Jalan Raja Chulan, 50200 Kuala Lumpur</div></div>
-    </div>
-    <div class="event-row">
-      <div class="event-icon">👔</div>
-      <div><div class="event-label">Pakaian</div><div class="event-value" id="ev-dress">Smart Casual / Baju Batik</div></div>
-    </div>
+  <!-- SECTION 1: Butiran -->
+  <div class="card">
+    <div class="sec-title"><span class="sec-num">1</span>Butiran Tetamu</div>
+    <label class="field">Nama penuh</label>
+    <input type="text" id="rsvp-name" placeholder="Nama anda...">
+    <label class="field">No. telefon</label>
+    <input type="tel" id="rsvp-phone" placeholder="012-3456789">
   </div>
 
-  <!-- MAP -->
-  <div class="map-wrap" id="map-wrap">
-    <iframe id="map-frame" src="" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
-
-  <div class="divider">✦</div>
-
-  <h3 class="sec-head">📸 Galeri</h3>
-  <div class="gallery" id="gallery">
-    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#1</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#2</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#3</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#4</span></div>
-  </div>
-
-  <div class="divider">✦</div>
-
-  <!-- RSVP -->
-  <div class="rsvp-section">
-    <div class="rsvp-title">🕌 Sahkan Kehadiran</div>
-    <div class="rsvp-sub">Sila RSVP sebelum <strong id="rsvp-deadline">28 November 2026</strong></div>
-
-    <form id="rsvpForm" onsubmit="submitRSVP(event)">
-      <div class="form-group">
-        <label class="form-label">Nama Penuh <span class="req">*</span></label>
-        <input type="text" class="form-input" id="rsvp-name" placeholder="Nama anda..." required>
+  <!-- SECTION 2: Kehadiran -->
+  <div class="card">
+    <div class="sec-title"><span class="sec-num">2</span>Kehadiran</div>
+    <label class="field">Status kehadiran</label>
+    <div class="pill-row" id="attendanceGroup">
+      <label class="pill hadir"><input type="radio" name="attendance" value="hadir" onchange="toggleAttend()"><span>✅ Hadir</span></label>
+      <label class="pill tidak active"><input type="radio" name="attendance" value="tidak-hadir" onchange="toggleAttend()" checked><span>❌ Tidak Hadir</span></label>
+    </div>
+    <div class="conditional" id="attendBox">
+      <div class="note">RM<span id="opt-price">220</span>/pax — umur 12 tahun ke atas</div>
+      <label class="field">Bilangan pax</label>
+      <div class="pill-row" id="paxGroup">
+        <label class="pill"><input type="radio" name="pax" value="1" onchange="calcCost()"><span>1 orang</span></label>
+        <label class="pill"><input type="radio" name="pax" value="2" onchange="calcCost()"><span>2 orang</span></label>
+        <label class="pill"><input type="radio" name="pax" value="3" onchange="calcCost()"><span>3 orang</span></label>
+        <label class="pill"><input type="radio" name="pax" value="4" onchange="calcCost()"><span>4 orang</span></label>
       </div>
-      <div class="form-group">
-        <label class="form-label">Nombor Telefon <span class="req">*</span></label>
-        <input type="tel" class="form-input" id="rsvp-phone" placeholder="012-3456789" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kehadiran <span class="req">*</span></label>
-        <select class="form-select" id="rsvp-attendance" required onchange="calcTotal()">
-          <option value="">— Sila Pilih —</option>
-          <option value="hadir">✅ Hadir (RM<span id="opt-price">220</span>/pax)</option>
-          <option value="tidak-hadir">❌ Maaf, Tidak Dapat Hadir</option>
-        </select>
-      </div>
-      <div class="form-group" id="pax-group" style="display:none">
-        <label class="form-label">Bilangan Pax</label>
-        <select class="form-select" id="rsvp-pax" onchange="calcTotal()">
-          <option value="1">1 orang — RM<span class="pax-price">220</span></option>
-          <option value="2">2 orang — RM<span class="pax-price-2">440</span></option>
-          <option value="3">3 orang — RM<span class="pax-price-3">660</span></option>
-          <option value="4">4 orang — RM<span class="pax-price-4">880</span></option>
-        </select>
-      </div>
-      <div class="form-group" id="acco-group" style="display:none">
-        <label class="form-label">Penginapan (Optional)</label>
-        <select class="form-select" id="rsvp-acco" onchange="calcTotal()">
-          <option value="0">Tidak perlu</option>
-          <option value="1">1 bilik (+RM<span id="acco-price">450</span>)</option>
-        </select>
-      </div>
-      <div class="total-box" id="total-box" style="display:none">
-        <span class="label">Jumlah</span>
-        <span class="amount" id="total-amount">RM 0.00</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Ucapan / Nota</label>
-        <textarea class="form-textarea" id="rsvp-message" placeholder="Tinggalkan ucapan atau keperluan khas..."></textarea>
-      </div>
-      <button type="submit" class="btn-submit" id="submitBtn">📨 Hantar RSVP & Bayar</button>
-    </form>
-
-    <div class="rsvp-done" id="rsvpSuccess">
-      <div class="done-icon">✅</div>
-      <h3>Terima Kasih!</h3>
-      <p class="done-sub">Kehadiran anda telah direkodkan.</p>
-      <div class="summary-card" id="summaryCard">
-        <div class="summary-row"><span class="slabel">Nama</span><span class="svalue" id="sum-name">—</span></div>
-        <div class="summary-row"><span class="slabel">Telefon</span><span class="svalue" id="sum-phone">—</span></div>
-        <div class="summary-row"><span class="slabel">Kehadiran</span><span class="svalue" id="sum-attendance">—</span></div>
-        <div class="summary-row" id="sum-pax-row" style="display:none"><span class="slabel">Pax</span><span class="svalue" id="sum-pax">—</span></div>
-        <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
-        <div class="summary-row" id="sum-amount-row" style="display:none"><span class="slabel">Jumlah</span><span class="svalue amount" id="sum-amount">—</span></div>
-        <div class="summary-row" id="sum-msg-row" style="display:none"><span class="slabel">Nota</span><span class="svalue" id="sum-message">—</span></div>
-        <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
-      </div>
-      <div class="checkout" id="checkoutLink" style="display:none">
-        <a id="checkoutBtn" href="#" target="_blank">💳 Bayar Sekarang</a>
-        <p style="font-size:0.7rem;margin-top:8px;color:var(--text-muted)">Pembayaran melalui CHIP (FPX / Kad / eWallet)</p>
+      <label class="field">Penginapan (optional)</label>
+      <div class="pill-row" id="accoGroup">
+        <label class="pill acco"><input type="radio" name="acco" value="1" onchange="calcCost()"><span>1 bilik (+RM<span id="acco-price">450</span>)</span></label>
+        <label class="pill active"><input type="radio" name="acco" value="0" onchange="calcCost()" checked><span>Tidak perlu</span></label>
       </div>
     </div>
   </div>
 
-  <footer class="footer">
+  <!-- SECTION 3: Kos -->
+  <div class="card cost-card" id="costCard" style="display:none">
+    <div class="sec-title"><span class="sec-num">RM</span>Ringkasan Bayaran</div>
+    <div id="costLines">
+      <div class="cost-line"><span>Tiket (pax × RM<span id="costPaxRate">220</span>)</span><span id="costPax">RM 0</span></div>
+      <div class="cost-line"><span>Penginapan</span><span id="costAcco">—</span></div>
+      <div class="cost-line total"><span>Jumlah</span><span id="costTotal">RM 0</span></div>
+    </div>
+  </div>
+
+  <!-- EVENT DETAILS -->
+  <div class="card">
+    <div class="sec-title"><span class="sec-num">📅</span>Butiran Majlis</div>
+    <div class="row-line"><span>Tarikh</span><span id="ev-date">—</span></div>
+    <div class="row-line"><span>Masa</span><span id="ev-time">—</span></div>
+    <div class="row-line"><span>Lokasi</span><span id="ev-loc">—</span></div>
+    <div class="row-line"><span>Alamat</span><span id="ev-addr">—</span></div>
+    <div class="row-line"><span>Pakaian</span><span id="ev-dress">—</span></div>
+    <div class="map-wrap" id="map-wrap"><iframe id="map-frame" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="card">
+    <div class="sec-title"><span class="sec-num">📸</span>Galeri</div>
+    <div class="gallery" id="gallery">
+      <div class="gallery-item"><span class="gallery-placeholder">#1</span></div>
+      <div class="gallery-item"><span class="gallery-placeholder">#2</span></div>
+      <div class="gallery-item"><span class="gallery-placeholder">#3</span></div>
+      <div class="gallery-item"><span class="gallery-placeholder">#4</span></div>
+    </div>
+  </div>
+
+  <!-- NOTA -->
+  <div class="card">
+    <div class="sec-title"><span class="sec-num">✉️</span>Ucapan / Nota</div>
+    <textarea id="rsvp-message" placeholder="Tinggalkan ucapan atau keperluan khas..."></textarea>
+    <div class="note">RSVP sebelum <strong id="rsvp-deadline">28 November 2026</strong></div>
+    <div class="err-text" id="errText">Sila lengkapkan nama dan no. telefon.</div>
+  </div>
+
+  <!-- SUCCESS VIEW -->
+  <div class="card success-view" id="successView">
+    <div class="done-icon">✅</div>
+    <h3>Terima Kasih!</h3>
+    <p class="done-sub">Kehadiran anda telah direkodkan.</p>
+    <div class="summary-card">
+      <div class="summary-row"><span class="slabel">Nama</span><span class="svalue" id="sum-name">—</span></div>
+      <div class="summary-row"><span class="slabel">Telefon</span><span class="svalue" id="sum-phone">—</span></div>
+      <div class="summary-row"><span class="slabel">Kehadiran</span><span class="svalue" id="sum-attendance">—</span></div>
+      <div class="summary-row" id="sum-pax-row" style="display:none"><span class="slabel">Pax</span><span class="svalue" id="sum-pax">—</span></div>
+      <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
+      <div class="summary-row" id="sum-amount-row" style="display:none"><span class="slabel">Jumlah</span><span class="svalue amount" id="sum-amount">—</span></div>
+      <div class="summary-row" id="sum-msg-row" style="display:none"><span class="slabel">Nota</span><span class="svalue" id="sum-message">—</span></div>
+      <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
+    </div>
+    <div id="checkoutBox" style="display:none">
+      <a class="checkout-btn" id="checkoutBtn" href="#" target="_blank">💳 Bayar Sekarang</a>
+      <p class="checkout-hint">Pembayaran melalui CHIP (FPX / Kad / eWallet)</p>
+    </div>
+  </div>
+
+  <footer class="footer" id="footer">
     <div class="footer-brand" id="footer-brand">Syarikat ABC Sdn Bhd</div>
-    <p id="footer-text">Terima kasih kerana sudi hadir memeriahkan majlis kami.</p>
-    <small>Sebarang pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--green)" id="contact-wa" href="#">WhatsApp</a></small>
+    <p id="footer-text">Terima kasih kerana sudi hadir</p>
+    <small>Pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--deep)" id="contact-wa" href="#">WhatsApp</a></small>
   </footer>
+</main>
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar" id="submitBar">
+  <div class="submit-bar-inner">
+    <button class="btn-submit" id="btnSubmit" onclick="openModal()">Semak & Hantar RSVP</button>
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Sahkan RSVP</h2>
+    <div class="sub">Semak butiran sebelum hantar</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Kembali</button>
+      <button class="btn-confirm" id="btnConfirm" onclick="submitRSVP()">Hantar RSVP</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const API_RSVP = '/api/rsvp?category=dinner';
 const API_CONFIG = '/api/config?category=dinner';
 const SECRET = 'rsvp2026';
-let cfg = {};
-let pricePax = 220, priceAcco = 450;
+let cfg = {}, pricePax = 220, priceAcco = 450;
 
+// ── Cover ──
+function reveal(){document.getElementById('cover').classList.add('revealed')}
+
+// ── Config ──
 async function loadConfig(){
-  try{const res=await fetch(API_CONFIG),j=await res.json();cfg=j.config||{};applyConfig()}catch(e){}
+  try{const r=await fetch(API_CONFIG),j=await r.json();cfg=j.config||{};applyConfig()}catch(e){}
 }
 function applyConfig(){
   if(!Object.keys(cfg).length)return;
   document.title=cfg.page_title||document.title;
-  if(cfg.company_name){document.getElementById('cover-company').textContent=cfg.company_name;document.getElementById('hero-company').textContent=cfg.company_name}
-  if(cfg.event_title){document.getElementById('cover-title').innerHTML=cfg.event_title;document.getElementById('hero-title').textContent=cfg.event_title}
+  if(cfg.company_name){
+    document.getElementById('cover-company').textContent=cfg.company_name;
+    document.getElementById('header-company').textContent=cfg.company_name;
+  }
+  if(cfg.event_title){
+    document.getElementById('cover-title').innerHTML=cfg.event_title.replace('\n','<br>');
+    document.getElementById('header-title').textContent=cfg.event_title;
+  }
   if(cfg.event_subtitle)document.getElementById('cover-sub').textContent=cfg.event_subtitle;
-  if(cfg.hero_message)document.getElementById('hero-msg').textContent=cfg.hero_message;
+  if(cfg.hero_message)document.getElementById('header-msg').textContent=cfg.hero_message;
   if(cfg.event_date_display)document.getElementById('ev-date').textContent=cfg.event_date_display;
   if(cfg.event_time)document.getElementById('ev-time').textContent=cfg.event_time;
   if(cfg.event_location)document.getElementById('ev-loc').textContent=cfg.event_location;
@@ -333,93 +404,153 @@ function applyConfig(){
   if(cfg.map_url)document.getElementById('map-frame').src=cfg.map_url;
   else document.getElementById('map-wrap').style.display='none';
   const gal=document.getElementById('gallery');let h='';
-  for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">GALERI<br>#'+i+'</span></div>'}
+  for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">#'+i+'</span></div>'}
   gal.innerHTML=h;
   pricePax=parseInt(cfg.price_per_pax)||220;priceAcco=parseInt(cfg.price_accommodation)||450;
-  document.getElementById('opt-price').textContent=pricePax;document.getElementById('acco-price').textContent=priceAcco;
-  document.querySelector('.pax-price-2').textContent=pricePax*2;document.querySelector('.pax-price-3').textContent=pricePax*3;document.querySelector('.pax-price-4').textContent=pricePax*4;
-  document.querySelector('.pax-price').textContent=pricePax;
+  document.getElementById('opt-price').textContent=pricePax;
+  document.getElementById('acco-price').textContent=priceAcco;
+  document.getElementById('costPaxRate').textContent=pricePax;
   if(cfg.rsvp_deadline)document.getElementById('rsvp-deadline').textContent=cfg.rsvp_deadline;
   if(cfg.company_name)document.getElementById('footer-brand').textContent=cfg.company_name;
   if(cfg.footer_text)document.getElementById('footer-text').textContent=cfg.footer_text;
   if(cfg.contact_name)document.getElementById('contact-name').textContent=cfg.contact_name;
   if(cfg.contact_phone)document.getElementById('contact-wa').href='https://wa.me/'+cfg.contact_phone;
 }
-function reveal(){document.getElementById('cover').classList.add('revealed')}
-function calcTotal(){
-  const att=document.getElementById('rsvp-attendance').value;
-  document.getElementById('pax-group').style.display=att==='hadir'?'block':'none';
-  document.getElementById('acco-group').style.display=att==='hadir'?'block':'none';
-  if(att==='hadir'){
-    const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
-    const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
-    const total=(pax*pricePax)+(acco*priceAcco);
-    document.getElementById('total-box').style.display=total>0?'flex':'none';
-    document.getElementById('total-amount').textContent='RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
-    document.getElementById('submitBtn').textContent=total>0?'📨 Hantar RSVP & Bayar (RM '+total+')':'📨 Hantar RSVP';
-  }else{
-    document.getElementById('total-box').style.display='none';
-    document.getElementById('submitBtn').textContent='📨 Hantar RSVP';
-  }
+
+// ── Attendance toggle ──
+function toggleAttend(){
+  const inp=document.querySelector('input[name=attendance]:checked');
+  document.querySelectorAll('input[name=attendance]').forEach(i=>i.closest('.pill').classList.toggle('active',i.checked));
+  document.getElementById('attendBox').classList.toggle('open',inp.value==='hadir');
+  calcCost();
 }
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
-async function submitRSVP(e){
-  e.preventDefault();
-  const btn=document.getElementById('submitBtn');
+
+// ── Pill active sync ──
+['pax','acco'].forEach(n=>{
+  document.querySelectorAll('input[name='+n+']').forEach(inp=>{
+    inp.addEventListener('change',()=>{
+      document.querySelectorAll('input[name='+n+']').forEach(i=>i.closest('.pill').classList.toggle('active',i.checked));
+      calcCost();
+    });
+  });
+});
+
+// ── Cost ──
+function calcCost(){
+  const hadir=document.querySelector('input[name=attendance]:checked').value==='hadir';
+  const card=document.getElementById('costCard');
+  if(!hadir){card.style.display='none';return}
+  card.style.display='block';
+  const pax=parseInt(document.querySelector('input[name=pax]:checked')?.value)||0;
+  const acco=parseInt(document.querySelector('input[name=acco]:checked')?.value)||0;
+  const paxCost=pax*pricePax;
+  const accoCost=acco*priceAcco;
+  const total=paxCost+accoCost;
+  document.getElementById('costPax').textContent='RM '+paxCost;
+  document.getElementById('costAcco').textContent=accoCost>0?'RM '+accoCost:'—';
+  document.getElementById('costTotal').textContent='RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
+  document.getElementById('btnSubmit').textContent=total>0?'Hantar RSVP & Bayar (RM '+total+')':'Hantar RSVP';
+}
+
+// ── Modal ──
+function openModal(){
   const name=document.getElementById('rsvp-name').value.trim();
   const phone=document.getElementById('rsvp-phone').value.trim();
-  const attendance=document.getElementById('rsvp-attendance').value;
-  const pax=parseInt(document.getElementById('rsvp-pax').value)||0;
-  const acco=parseInt(document.getElementById('rsvp-acco').value)||0;
-  const message=document.getElementById('rsvp-message').value.trim();
-  if(!name||!phone||!attendance){showToast('⚠️ Sila isi ruangan wajib');return}
-  const amount=(attendance==='hadir')?(pax*pricePax)+(acco*priceAcco):0;
-  btn.disabled=true;btn.textContent='⏳ Menghantar...';
+  if(!name||!phone){
+    document.getElementById('errText').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+  document.getElementById('errText').style.display='none';
+  const att=document.querySelector('input[name=attendance]:checked');
+  const paxSel=document.querySelector('input[name=pax]:checked');
+  const accoSel=document.querySelector('input[name=acco]:checked');
+  const msg=document.getElementById('rsvp-message').value.trim();
+  const total=document.getElementById('costTotal').textContent;
+
+  const rows=[
+    ['Nama',name],['No. tel',phone],
+    ['Kehadiran',att.value==='hadir'?'✅ Hadir':'❌ Tidak Hadir'],
+  ];
+  if(att.value==='hadir'){
+    rows.push(['Pax',(paxSel?.value||'1')+' orang']);
+    if(accoSel?.value==='1')rows.push(['Penginapan','1 bilik (+RM '+priceAcco+')']);
+    rows.push(['Jumlah',total]);
+  }
+  if(msg)rows.push(['Nota',msg]);
+
+  document.getElementById('modalBody').innerHTML=rows.map(r=>'<div class="row-line"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>').join('');
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+
+// ── Submit ──
+async function submitRSVP(){
+  const name=document.getElementById('rsvp-name').value.trim();
+  const phone=document.getElementById('rsvp-phone').value.trim();
+  const att=document.querySelector('input[name=attendance]:checked').value;
+  const pax=parseInt(document.querySelector('input[name=pax]:checked')?.value)||1;
+  const acco=parseInt(document.querySelector('input[name=acco]:checked')?.value)||0;
+  const msg=document.getElementById('rsvp-message').value.trim();
+  const amount=att==='hadir'?(pax*pricePax)+(acco*priceAcco):0;
+
+  const btn=document.getElementById('btnConfirm');
+  btn.textContent='⏳ Menghantar...';btn.classList.add('loading');
   try{
-    const res=await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({secret:SECRET,name,phone,attendance,pax,accommodation:acco,amount,message,timestamp:new Date().toISOString()}).toString()});
+    const res=await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({secret:SECRET,name,phone,attendance:att,pax,accommodation:acco,amount,message:msg,timestamp:new Date().toISOString()}).toString()});
     const data=await res.json();
-    document.getElementById('rsvpForm').style.display='none';
-    document.getElementById('rsvpSuccess').style.display='block';
+    closeModal();
+    // Hide main + submit bar, show success
+    document.getElementById('mainView').querySelectorAll('.card').forEach(c=>{if(c.id!=='successView')c.style.display='none'});
+    document.getElementById('submitBar').style.display='none';
+    document.getElementById('successView').style.display='block';
+    document.getElementById('footer').style.display='none'; // hide footer in success view
     // Populate summary
     document.getElementById('sum-name').textContent=name;
     document.getElementById('sum-phone').textContent=phone;
-    const attLabels={'hadir':'✅ Hadir','tidak-hadir':'❌ Tidak Hadir'};
-    document.getElementById('sum-attendance').textContent=attLabels[attendance]||attendance;
-    if(attendance==='hadir'&&pax>0){
-      document.getElementById('sum-pax-row').style.display='flex';document.getElementById('sum-pax').textContent=pax+' orang';
-      if(acco>0){document.getElementById('sum-acco-row').style.display='flex';document.getElementById('sum-acco').textContent='1 bilik (RM '+priceAcco+')'}
+    document.getElementById('sum-attendance').textContent=att==='hadir'?'✅ Hadir':'❌ Tidak Hadir';
+    if(att==='hadir'){
+      document.getElementById('sum-pax-row').style.display='flex';
+      document.getElementById('sum-pax').textContent=pax+' orang';
+      if(acco>0){document.getElementById('sum-acco-row').style.display='flex';document.getElementById('sum-acco').textContent='1 bilik (+RM '+priceAcco+')'}
       if(amount>0){document.getElementById('sum-amount-row').style.display='flex';document.getElementById('sum-amount').textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
     }
-    if(message){document.getElementById('sum-msg-row').style.display='flex';document.getElementById('sum-message').textContent=message}
+    if(msg){document.getElementById('sum-msg-row').style.display='flex';document.getElementById('sum-message').textContent=msg}
     if(data.id){document.getElementById('sum-ref-row').style.display='flex';document.getElementById('sum-ref').textContent='DINNER-'+data.id}
     if(data.checkoutUrl){
-      document.getElementById('checkoutLink').style.display='block';document.getElementById('checkoutBtn').href=data.checkoutUrl;
-      setTimeout(()=>{window.open(data.checkoutUrl,'_blank')},1500);
+      document.getElementById('checkoutBox').style.display='block';
+      document.getElementById('checkoutBtn').href=data.checkoutUrl;
+      setTimeout(()=>window.open(data.checkoutUrl,'_blank'),1500);
     }
-    document.getElementById('rsvpSuccess').scrollIntoView({behavior:'smooth'});
-  }catch(err){showToast('❌ Ralat sambungan. Cuba lagi.');btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP'}
+    document.getElementById('successView').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    btn.textContent='Hantar RSVP';btn.classList.remove('loading');
+    alert('❌ Ralat sambungan. Cuba lagi.');
+  }
 }
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-// Handle payment return from CHIP
+// ── CHIP payment return ──
 (function(){
   const p=new URLSearchParams(location.search);
-  const status=p.get('status');
-  const id=p.get('id');
-  if(status==='success'){
-    document.getElementById('rsvpForm').style.display='none';
-    document.getElementById('rsvpSuccess').style.display='block';
+  if(p.get('status')==='success'){
+    cover.classList.add('revealed');
+    document.getElementById('mainView').querySelectorAll('.card').forEach(c=>{if(c.id!=='successView')c.style.display='none'});
+    document.getElementById('submitBar').style.display='none';
+    document.getElementById('successView').style.display='block';
     document.getElementById('sum-ref-row').style.display='flex';
-    document.getElementById('sum-ref').textContent='DINNER-'+esc(id||'?');
-    document.getElementById('checkoutLink').style.display='none';
-  }else if(status==='failed'){
-    document.getElementById('rsvpForm').style.display='none';
-    document.getElementById('rsvpSuccess').style.display='block';
-    document.querySelector('.done-sub').textContent='Pembayaran tidak berjaya. Sila cuba lagi atau hubungi kami.';
-    document.getElementById('checkoutLink').style.display='none';
+    document.getElementById('sum-ref').textContent='DINNER-'+esc(p.get('id')||'?');
+    document.querySelector('.done-sub').textContent='Pembayaran berjaya! Terima kasih.';
+  }else if(p.get('status')==='failed'){
+    cover.classList.add('revealed');
+    document.getElementById('mainView').querySelectorAll('.card').forEach(c=>{if(c.id!=='successView')c.style.display='none'});
+    document.getElementById('submitBar').style.display='none';
+    document.getElementById('successView').style.display='block';
+    document.querySelector('.done-sub').textContent='Pembayaran tidak berjaya. Sila hubungi kami.';
   }
 })();
 
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 loadConfig();
 </script>
 </body>
