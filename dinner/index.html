@@ -848,11 +848,18 @@ function applyConfig(){
   } else {
     document.getElementById('map-wrap').style.display='none';
   }
-  const gal=document.getElementById('gallery');
-  if(gal){
-    let h='';
-    for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">#'+i+'</span></div>'}
-    gal.innerHTML=h;
+  if(cfg.background_url){
+    const bgUrl = cfg.background_url;
+    const cov = document.getElementById('cover');
+    if(cov){
+      cov.style.backgroundImage = `radial-gradient(circle at center, rgba(255, 191, 0, 0.45) 0%, rgba(40, 63, 36, 0.85) 60%, rgba(40, 63, 36, 0.95) 100%), url('${bgUrl}')`;
+      cov.style.backgroundSize = 'cover';
+      cov.style.backgroundPosition = 'center';
+    }
+    document.body.style.backgroundImage = `linear-gradient(rgba(40, 63, 36, 0.94), rgba(40, 63, 36, 0.95)), url('${bgUrl}')`;
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
   }
   pricePax=parseInt(cfg.price_per_pax)||220;priceAcco=parseInt(cfg.price_accommodation)||450;
   document.getElementById('opt-price').textContent=pricePax;
