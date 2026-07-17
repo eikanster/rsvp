@@ -65,6 +65,12 @@
   .save-status.success{display:inline-block;background:rgba(46,125,50,0.12);color:var(--success)}
   .save-status.error{display:inline-block;background:rgba(198,40,40,0.1);color:var(--danger)}
   .refreshed{font-size:11px;color:var(--text-muted)}
+
+  .gallery-upload{display:flex;gap:6px}
+  .gallery-upload input[type="file"]{display:none}
+  .gallery-upload input[type="text"]{flex:1}
+  .upload-btn{padding:10px 14px;font-size:16px;line-height:1;min-width:unset}
+  .upload-btn.uploading{opacity:0.5;pointer-events:none}
   @media(max-width:768px){.header{flex-direction:column;align-items:flex-start}.editor-grid{grid-template-columns:1fr}thead th,tbody td{padding:8px 10px}}
 </style>
 </head>
@@ -140,10 +146,10 @@
     </div></div>
     <div class="editor-section"><h3>🗺️ Peta & Galeri</h3><div class="editor-grid">
       <div class="field-group"><label>Maps Embed URL</label><textarea id="cfg-map_url"></textarea></div>
-      <div class="field-group"><label>Gambar #1</label><input id="cfg-gallery_1"></div>
-      <div class="field-group"><label>Gambar #2</label><input id="cfg-gallery_2"></div>
-      <div class="field-group"><label>Gambar #3</label><input id="cfg-gallery_3"></div>
-      <div class="field-group"><label>Gambar #4</label><input id="cfg-gallery_4"></div>
+      <div class="field-group"><label>Gambar #1</label><div class="gallery-upload"><input id="cfg-gallery_1"><input type="file" accept="image/*" onchange="uploadImage(this,1)"><button type="button" class="btn upload-btn" onclick="this.previousElementSibling.click()">📤</button></div></div>
+      <div class="field-group"><label>Gambar #2</label><div class="gallery-upload"><input id="cfg-gallery_2"><input type="file" accept="image/*" onchange="uploadImage(this,2)"><button type="button" class="btn upload-btn" onclick="this.previousElementSibling.click()">📤</button></div></div>
+      <div class="field-group"><label>Gambar #3</label><div class="gallery-upload"><input id="cfg-gallery_3"><input type="file" accept="image/*" onchange="uploadImage(this,3)"><button type="button" class="btn upload-btn" onclick="this.previousElementSibling.click()">📤</button></div></div>
+      <div class="field-group"><label>Gambar #4</label><div class="gallery-upload"><input id="cfg-gallery_4"><input type="file" accept="image/*" onchange="uploadImage(this,4)"><button type="button" class="btn upload-btn" onclick="this.previousElementSibling.click()">📤</button></div></div>
     </div></div>
     <div class="editor-section"><h3>📞 Footer</h3><div class="editor-grid">
       <div class="field-group"><label>Footer Text</label><input id="cfg-footer_text"></div>
@@ -208,6 +214,64 @@ async function saveConfig(){
     if(j.success){[el,el2].forEach(e=>{e.className='save-status success';e.textContent='✅ Tersimpan!'})}else{[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ '+j.error})}
     setTimeout(()=>[el,el2].forEach(e=>e.className='save-status'),3000)
   }catch(e){[el,el2].forEach(e=>{e.className='save-status error';e.textContent='❌ Gagal'})}
+}
+
+// ─── IMAGE UPLOAD with Canvas WebP compression ───
+async function uploadImage(input, num){
+  const file = input.files[0];
+  if(!file) return;
+  const btn = input.nextElementSibling;
+  const urlInput = document.getElementById('cfg-gallery_'+num);
+  btn.textContent='⏳'; btn.classList.add('uploading');
+
+  try{
+    // Compress + convert to WebP via Canvas
+    const blob = await compressImage(file, 800, 0.8);
+
+    // Upload to R2
+    const fd = new FormData();
+    fd.append('file', blob, 'gallery_'+num+'.webp');
+
+    const res = await fetch('/api/upload?category=dinner', {method:'POST',body:fd});
+    const data = await res.json();
+
+    if(data.url){
+      urlInput.value = data.url;
+      btn.textContent='✅';
+      setTimeout(()=>{btn.textContent='📤';btn.classList.remove('uploading')},2000);
+    }else{
+      throw new Error(data.error||'Upload failed');
+    }
+  }catch(e){
+    btn.textContent='❌';
+    setTimeout(()=>{btn.textContent='📤';btn.classList.remove('uploading')},2000);
+    console.error('Upload error:',e);
+  }
+  input.value='';
+}
+
+function compressImage(file, maxWidth, quality){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let w=img.width, h=img.height;
+      if(w>maxWidth){h=Math.round(h*(maxWidth/w));w=maxWidth}
+
+      const canvas = document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+
+      canvas.toBlob(blob => {
+        if(blob) resolve(blob);
+        else reject(new Error('Canvas toBlob failed'));
+      }, 'image/webp', quality);
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = url;
+  });
 }
 </script>
 </body>

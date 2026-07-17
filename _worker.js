@@ -33,6 +33,11 @@ export default {
       return handleWebhook(request, env, headers);
     }
 
+    // ─── Upload ──────────────────────────────────
+    if (url.pathname === '/api/upload') {
+      return handleUpload(request, env, url, headers);
+    }
+
     // ─── Static ──────────────────────────────────
     return env.ASSETS.fetch(request);
   }
@@ -224,6 +229,60 @@ async function handleWebhook(request, env, headers) {
     console.error('Webhook error:', e);
     return new Response('OK', { status: 200, headers });
   }
+}
+
+// ═══════════════════════════════════════════════════
+//  UPLOAD: save to R2
+// ═══════════════════════════════════════════════════
+async function handleUpload(request, env, url, headers) {
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+
+  const contentType = request.headers.get('Content-Type') || '';
+  const category = url.searchParams.get('category') || 'wedding';
+
+  // Multipart form data
+  if (contentType.includes('multipart/form-data')) {
+    const formData = await request.formData();
+    const file = formData.get('file');
+    if (!file || !(file instanceof File)) {
+      return json({ error: 'Missing file' }, 400, headers);
+    }
+
+    // Validate
+    if (!file.type.startsWith('image/')) {
+      return json({ error: 'Only images allowed' }, 400, headers);
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return json({ error: 'Max 10MB' }, 400, headers);
+    }
+
+    const key = `rsvp/${category}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+    await env.BUCKET.put(key, file.stream(), {
+      httpMetadata: { contentType: file.type },
+    });
+
+    // Public URL (R2 bucket with custom domain or r2.dev)
+    const publicUrl = `https://jiai-uploads.r2.cloudflarestorage.com/${key}`;
+    // If using r2.dev subdomain:
+    // const publicUrl = `https://pub-xxx.r2.dev/${key}`;
+
+    return json({ ok: true, url: publicUrl, key }, 200, headers);
+  }
+
+  // Fallback: raw binary upload
+  if (contentType.startsWith('image/')) {
+    const key = `rsvp/${category}/${Date.now()}.webp`;
+    await env.BUCKET.put(key, request.body, {
+      httpMetadata: { contentType },
+    });
+
+    const publicUrl = `https://jiai-uploads.r2.cloudflarestorage.com/${key}`;
+    return json({ ok: true, url: publicUrl, key }, 200, headers);
+  }
+
+  return json({ error: 'Unsupported content type' }, 400, headers);
 }
 
 // ═══════════════════════════════════════════════════
