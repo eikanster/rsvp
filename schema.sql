@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS rsvp (
   checkout_id TEXT DEFAULT NULL,
   timestamp TEXT NOT NULL,
   haji_year TEXT DEFAULT NULL,
-  address TEXT DEFAULT NULL
+  address TEXT DEFAULT NULL,
+  jiai_haji TEXT DEFAULT 'tidak'
 );
 
 CREATE TABLE IF NOT EXISTS config (

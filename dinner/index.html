@@ -696,6 +696,12 @@
     <div class="note">RM<span id="opt-price">220</span>/pax — umur 12 tahun ke atas sahaja. Seat terhad.</div>
 
     <div class="conditional" id="hadirBox">
+      <label class="field">Adakah anda jemaah haji JIAI?</label>
+      <div class="toggle-row" id="jiaiHajiToggle" style="margin-bottom: 14px;">
+        <label class="pill ya"><input type="radio" name="jiai_haji" value="ya"><span>Ya</span></label>
+        <label class="pill tidak active"><input type="radio" name="jiai_haji" value="tidak" checked><span>Tidak</span></label>
+      </div>
+
       <label class="field">Bilangan kehadiran</label>
       <div class="pill-row" id="paxGroup">
         <label class="pill"><input type="radio" name="pax" value="1"><span>1 pax</span></label>
@@ -883,6 +889,7 @@ function setupToggle(name, boxId){
 setupToggle('hadir','hadirBox');
 setupToggle('inap','inapBox');
 setupToggle('haji_year');
+setupToggle('jiai_haji');
 
 // ─── PILL GROUPS: pax + tempoh ───
 document.querySelectorAll('input[name=pax]').forEach(inp=>{
@@ -923,10 +930,12 @@ function calcCost(){
   let paxCost=0, accoCost=0;
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
   if(hadir){
+    const jiaiHaji = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya';
     const paxSel = document.querySelector('input[name=pax]:checked');
     let n=0;
     if(paxSel) n = paxSel.value==='lain' ? (parseInt(document.getElementById('paxLainInput').value)||0) : parseInt(paxSel.value);
-    paxCost = n * pricePax;
+    let billable = (jiaiHaji && n > 0) ? n - 1 : n;
+    paxCost = billable * pricePax;
   }
   const inapYa = document.querySelector('input[name=inap]:checked').value==='ya';
   if(inapYa){
@@ -954,6 +963,7 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   const hajiYearVal = document.querySelector('input[name=haji_year]:checked').value;
   const addressVal = document.getElementById('rsvp-address').value.trim();
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
+  const jiaiHajiVal = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya' ? 'Ya' : 'Tidak';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const paxVal = paxSel ? (paxSel.value==='lain'?document.getElementById('paxLainInput').value:paxSel.value) : '—';
   const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value).filter(Boolean);
@@ -970,6 +980,7 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   if(addressVal) rows.push(['Alamat',addressVal]);
   rows.push(['Kehadiran',hadir?'✅ Hadir':'❌ Tidak Hadir']);
   if(hadir){
+    rows.push(['Jemaah JIAI',jiaiHajiVal]);
     rows.push(['Bilangan pax',paxVal+' pax']);
     if(paxNamesArr.length)rows.push(['Nama tambahan',paxNamesArr.join(', ')]);
     rows.push(['Penginapan',inapYa?tempohVal:'Tidak']);
@@ -992,19 +1003,21 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   const haji_year = document.querySelector('input[name=haji_year]:checked').value;
   const address = document.getElementById('rsvp-address').value.trim();
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
+  const jiai_haji = document.querySelector('input[name=jiai_haji]:checked')?.value || 'tidak';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const pax = hadir ? (paxSel ? (paxSel.value==='lain'?parseInt(document.getElementById('paxLainInput').value)||0:parseInt(paxSel.value)) : 1) : 0;
   const inapYa = document.querySelector('input[name=inap]:checked').value==='ya';
   const tempohSel = document.querySelector('input[name=tempoh]:checked');
   const malam = inapYa&&tempohSel&&tempohSel.value!=='lain' ? (parseInt(tempohSel.dataset.malam)||0) : 0;
-  const amount = (pax*pricePax) + (malam*priceAcco);
+  const billable = (jiai_haji === 'ya' && pax > 0) ? pax - 1 : pax;
+  const amount = (billable*pricePax) + (malam*priceAcco);
   const msg = document.getElementById('rsvp-message').value.trim();
 
   const btn = document.getElementById('btnConfirm');
   btn.textContent = '⏳ Menghantar...'; btn.classList.add('loading');
   try{
     const res = await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString(),haji_year,address}).toString()});
+      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString(),haji_year,address,jiai_haji}).toString()});
     const data = await res.json();
     try{
       document.getElementById('modalOverlay').classList.remove('open');
