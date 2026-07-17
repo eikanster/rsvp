@@ -263,10 +263,8 @@ async function handleUpload(request, env, url, headers) {
       httpMetadata: { contentType: file.type },
     });
 
-    // Public URL (R2 bucket with custom domain or r2.dev)
-    const publicUrl = `https://jiai-uploads.r2.cloudflarestorage.com/${key}`;
-    // If using r2.dev subdomain:
-    // const publicUrl = `https://pub-xxx.r2.dev/${key}`;
+    // Public URL via custom domain
+    const publicUrl = `https://link.jayibrahimalislam.com/${key}`;
 
     return json({ ok: true, url: publicUrl, key }, 200, headers);
   }
@@ -278,7 +276,7 @@ async function handleUpload(request, env, url, headers) {
       httpMetadata: { contentType },
     });
 
-    const publicUrl = `https://jiai-uploads.r2.cloudflarestorage.com/${key}`;
+    const publicUrl = `https://link.jayibrahimalislam.com/${key}`;
     return json({ ok: true, url: publicUrl, key }, 200, headers);
   }
 
