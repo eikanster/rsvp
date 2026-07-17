@@ -55,10 +55,14 @@ async function handleRSVP(request, env, url, headers) {
     if (secret !== 'rsvp2026') {
       return json({ error: 'Unauthorized' }, 401, headers);
     }
-    const { results } = await env.DB.prepare(
-      'SELECT * FROM rsvp WHERE category = ? ORDER BY id DESC'
-    ).bind(category).all();
-    return json({ rsvps: results }, 200, headers);
+    try {
+      const { results } = await env.DB.prepare(
+        'SELECT * FROM rsvp WHERE category = ? ORDER BY id DESC'
+      ).bind(category).all();
+      return json({ rsvps: results }, 200, headers);
+    } catch (e) {
+      return json({ error: 'Database query error: ' + e.message }, 500, headers);
+    }
   }
 
   // ── POST: submit RSVP ──
@@ -127,17 +131,21 @@ async function handleRSVP(request, env, url, headers) {
       }
     }
 
-    const { success, meta } = await env.DB.prepare(
-      `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(category, name, phone, attendance, pax, accommodation, amount, message,
-           amount > 0 ? 'pending' : 'free', checkoutId, timestamp).run();
+    try {
+      const { success, meta } = await env.DB.prepare(
+        `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(category, name, phone, attendance, pax, accommodation, amount, message,
+             amount > 0 ? 'pending' : 'free', checkoutId, timestamp).run();
 
-    if (!success) {
-      return json({ error: 'Failed to save' }, 500, headers);
+      if (!success) {
+        return json({ error: 'Failed to save to database' }, 500, headers);
+      }
+
+      return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId }, 200, headers);
+    } catch (e) {
+      return json({ error: 'Database save error: ' + e.message }, 500, headers);
     }
-
-    return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId }, 200, headers);
   }
 
   return json({ error: 'Method not allowed' }, 405, headers);
