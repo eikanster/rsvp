@@ -553,7 +553,12 @@ function applyConfig() {
 
   // Map
   if (cfg.map_url) {
-    document.getElementById('map-frame').src = cfg.map_url;
+    let mapUrl = cfg.map_url.trim();
+    if (mapUrl.startsWith('<')) {
+      const m = mapUrl.match(/src="([^"]+)"/);
+      if (m) mapUrl = m[1];
+    }
+    document.getElementById('map-frame').src = mapUrl;
   } else {
     document.getElementById('map-wrap').style.display = 'none';
   }
