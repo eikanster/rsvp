@@ -90,6 +90,7 @@ async function handleRSVP(request, env, url, headers) {
     // For dinner: create CHIP checkout if amount > 0
     let checkoutUrl = null;
     let checkoutId = null;
+    let chipError = null;
     if (amount > 0 && env.CHIP_API_KEY && env.CHIP_BRAND_ID) {
       try {
         const chipResp = await fetch('https://gate.chip-in.asia/api/v1/purchases/', {
@@ -125,9 +126,11 @@ async function handleRSVP(request, env, url, headers) {
           checkoutId = chipData.id;
         } else {
           console.error('CHIP failed:', chipData);
+          chipError = chipData;
         }
       } catch (e) {
         console.error('CHIP error:', e);
+        chipError = { message: e.message };
       }
     }
 
@@ -141,7 +144,7 @@ async function handleRSVP(request, env, url, headers) {
       return json({ error: 'Failed to save' }, 500, headers);
     }
 
-    return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId }, 200, headers);
+    return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId, chipError }, 200, headers);
   }
 
   return json({ error: 'Method not allowed' }, 405, headers);
