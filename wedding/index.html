@@ -478,7 +478,7 @@ if (location.hostname.startsWith('dinner') && location.pathname === '/') locatio
 
 <script>
 // ============ CONFIG LOADER ============
-const API_CONFIG = '/api/wedding-config';
+const API_CONFIG = '/api/config?category=wedding';
 let cfg = {};
 let WEDDING_DATE = new Date('2026-11-01T10:00:00+08:00');
 
@@ -625,7 +625,7 @@ function toggleMusic() {
 }
 
 // ============ RSVP ============
-const RSVP_API_URL = '/api/rsvp';
+const RSVP_API_URL = '/api/rsvp?category=wedding';
 const RSVP_SECRET = 'rsvp2026';
 
 function showToast(msg) {
