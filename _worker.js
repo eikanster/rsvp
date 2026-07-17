@@ -28,6 +28,11 @@ export default {
       return handleConfig(request, env, url, headers);
     }
 
+    // ─── Update Receipt ──────────────────────────
+    if (url.pathname === '/api/update-receipt') {
+      return handleUpdateReceipt(request, env, url, headers);
+    }
+
     // ─── CHIP Webhook ────────────────────────────
     if (url.pathname === '/api/webhook') {
       return handleWebhook(request, env, headers);
@@ -262,4 +267,32 @@ function json(data, status, headers) {
     status,
     headers: { ...headers, 'Content-Type': 'application/json' }
   });
+}
+
+async function handleUpdateReceipt(request, env, url, headers) {
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+  try {
+    const body = await request.text();
+    const p = new URLSearchParams(body);
+    const id = parseInt(p.get('id'));
+    const receiptUrl = p.get('receipt_url')?.trim();
+
+    if (!id || !receiptUrl) {
+      return json({ error: 'Missing parameters' }, 400, headers);
+    }
+
+    const { success } = await env.DB.prepare(
+      `UPDATE rsvp SET receipt_url = ?, payment_status = 'pending' WHERE id = ?`
+    ).bind(receiptUrl, id).run();
+
+    if (!success) {
+      return json({ error: 'Failed to update receipt in database' }, 500, headers);
+    }
+
+    return json({ ok: true }, 200, headers);
+  } catch (e) {
+    return json({ error: 'Database update error: ' + e.message }, 500, headers);
+  }
 }

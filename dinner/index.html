@@ -745,26 +745,7 @@
     </div>
   </div>
 
-  <!-- SECTION: Pembayaran (Conditional) -->
-  <div class="card conditional" id="pembayaranCard" style="display:none;">
-    <div class="sec-title"><span class="sec-num">💳</span>Pembayaran (CIMB)</div>
-    <p style="font-size:13px;color:var(--gold);margin-bottom:12px;opacity:0.9;line-height:1.6">
-      Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi sebelum menghantar borang.
-    </p>
-    <div style="background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8">
-      <div><strong>Bank:</strong> <span id="bank-name-display">CIMB Bank</span></div>
-      <div><strong>No. Akaun:</strong> <span id="bank-acc-no-display">1234-5678-9012</span></div>
-      <div><strong>Nama Akaun:</strong> <span id="bank-acc-name-display">JAY IBRAHIM AL ISLAM</span></div>
-    </div>
-    
-    <label class="field">Muat Naik Resit Transaksi</label>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <input type="file" id="receiptFile" accept="image/*,application/pdf" style="display:none;" onchange="uploadReceipt(this)">
-      <button type="button" class="btn" style="background:var(--deep);color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;" onclick="document.getElementById('receiptFile').click()">📤 Pilih Resit</button>
-      <span id="receiptStatus" style="font-size:12px;color:var(--gold);opacity:0.8;">Tiada fail dipilih</span>
-    </div>
-    <input type="hidden" id="rsvp-receipt-url" value="">
-  </div>
+
 
   <!-- SECTION 4: Butiran Majlis -->
   <div class="card">
@@ -806,6 +787,32 @@
       <div class="summary-row" id="sum-receipt-row" style="display:none"><span class="slabel">Resit</span><span class="svalue" id="sum-receipt">—</span></div>
       <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
     </div>
+    <!-- SECTION: Pembayaran Success View (Conditional) -->
+    <div class="card conditional" id="pembayaranCard" style="display:none; margin-top:20px; background:rgba(255, 255, 255, 0.05); border:1px solid var(--line);">
+      <div class="sec-title" style="margin-top:0;"><span class="sec-num">💳</span>Pembayaran (CIMB)</div>
+      <p style="font-size:13px;color:var(--gold);margin-bottom:12px;opacity:0.9;line-height:1.6;text-align:left;">
+        Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi di bawah atau hubungi WhatsApp kami.
+      </p>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8;text-align:left;">
+        <div><strong>Bank:</strong> <span id="bank-name-display">CIMB Bank</span></div>
+        <div><strong>No. Akaun:</strong> <span id="bank-acc-no-display">—</span></div>
+        <div><strong>Nama Akaun:</strong> <span id="bank-acc-name-display">—</span></div>
+      </div>
+      
+      <label class="field" style="text-align:left;display:block;">Muat Naik Resit Transaksi</label>
+      <div style="display:flex;align-items:center;gap:10px;justify-content:flex-start;margin-bottom:14px;">
+        <input type="file" id="receiptFile" accept="image/*,application/pdf" style="display:none;" onchange="uploadReceipt(this)">
+        <button type="button" class="btn" style="background:var(--deep);color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;" onclick="document.getElementById('receiptFile').click()">📤 Pilih Resit</button>
+        <span id="receiptStatus" style="font-size:12px;color:var(--gold);opacity:0.8;">Tiada fail dipilih</span>
+      </div>
+      <input type="hidden" id="rsvp-receipt-url" value="">
+      
+      <div style="text-align:left;">
+        <a id="payment-wa-btn" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#10b981;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">
+          💬 Hantar Resit ke WhatsApp
+        </a>
+      </div>
+    </div>
   </div>
 
   <footer id="footer" style="text-align:center;padding:24px 0 16px;color:#8a8270;font-size:12px;line-height:2">
@@ -839,7 +846,7 @@
 const API_RSVP = '/api/rsvp?category=dinner';
 const API_CONFIG = '/api/config?category=dinner';
 const SECRET = 'rsvp2026';
-let cfg = {}, pricePax = 220, priceAcco = 450;
+let cfg = {}, pricePax = 220, priceAcco = 450, lastRsvpId = null;
 
 // ─── CONFIG ───
 async function loadConfig(){
@@ -915,8 +922,24 @@ async function uploadReceipt(input) {
     
     if (data.url) {
       document.getElementById('rsvp-receipt-url').value = data.url;
-      status.textContent = '✅ Berjaya dimuat naik!';
+      if(lastRsvpId){
+        status.textContent = '⏳ Mengemas kini rekod...';
+        const updRes = await fetch('/api/update-receipt', {
+          method: 'POST',
+          headers: {'Content-Type':'application/x-www-form-urlencoded'},
+          body: new URLSearchParams({ id: lastRsvpId, receipt_url: data.url }).toString()
+        });
+        const updData = await updRes.json();
+        if(!updData.ok) throw new Error(updData.error || 'Failed to update database record');
+      }
+      status.textContent = '✅ Resit berjaya dihantar!';
       status.style.color = '#467235';
+      const sumReceipt = document.getElementById('sum-receipt');
+      const sumReceiptRow = document.getElementById('sum-receipt-row');
+      if(sumReceipt && sumReceiptRow) {
+        sumReceiptRow.style.display = 'flex';
+        sumReceipt.innerHTML = `<a href="${esc(data.url)}" target="_blank" style="color:var(--gold);text-decoration:underline">Lihat Resit</a>`;
+      }
     } else {
       throw new Error(data.error || 'Upload failed');
     }
@@ -1030,17 +1053,7 @@ function calcCost(){
     }
   }
   
-  const pCard = document.getElementById('pembayaranCard');
-  if(pCard){
-    if(total > 0){
-      pCard.style.display = 'block';
-      document.getElementById('pay-amount-display').textContent = 'RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
-    } else {
-      pCard.style.display = 'none';
-      document.getElementById('rsvp-receipt-url').value = '';
-      document.getElementById('receiptStatus').textContent = 'Tiada fail dipilih';
-    }
-  }
+  // pembayaranCard is inside successView and will be handled upon form submit.
   
   document.getElementById('btnSubmit').textContent = total>0 ? 'Semak & Hantar RSVP (RM '+total+')' : 'Semak & Hantar RSVP';
 }
@@ -1057,14 +1070,6 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   document.getElementById('errText').style.display='none';
 
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
-  const totalCost = document.getElementById('costTotal').textContent;
-  const costAmt = parseFloat(totalCost.replace(/[^\d.]/g,'')) || 0;
-  const receiptUrl = document.getElementById('rsvp-receipt-url').value;
-  if(hadir && costAmt > 0 && !receiptUrl){
-    alert('Sila muat naik resit pembayaran terlebih dahulu.');
-    return;
-  }
-
   const hajiYearVal = document.querySelector('input[name=haji_year]:checked').value;
   const addressVal = document.getElementById('rsvp-address').value.trim();
   const jiaiHajiVal = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya' ? 'Ya' : 'Tidak';
@@ -1075,6 +1080,7 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   const tempohSel = document.querySelector('input[name=tempoh]:checked');
   const tempohVal = tempohSel ? (tempohSel.value==='lain'?document.getElementById('tempohLainInput').value:tempohSel.value) : '—';
   const msg = document.getElementById('rsvp-message').value.trim();
+  const totalCost = document.getElementById('costTotal').textContent;
 
   let rows = [
     ['Nama',name],['No. tel',phone],
@@ -1088,9 +1094,6 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
     if(paxNamesArr.length)rows.push(['Nama tambahan',paxNamesArr.join(', ')]);
     rows.push(['Penginapan',inapYa?tempohVal:'Tidak']);
     rows.push(['Anggaran kos',totalCost]);
-    if(costAmt > 0 && receiptUrl){
-      rows.push(['Resit Pembayaran','✅ Terlampir']);
-    }
   }
   if(msg)rows.push(['Ucapan',msg]);
 
@@ -1157,7 +1160,28 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
         el=document.getElementById('sum-receipt-row');if(el)el.style.display='flex';
         el=document.getElementById('sum-receipt');if(el)el.innerHTML=`<a href="${esc(receipt_url)}" target="_blank" style="color:var(--gold);text-decoration:underline">Lihat Resit</a>`;
       }
-      if(data.id){el=document.getElementById('sum-ref-row');if(el)el.style.display='flex';el=document.getElementById('sum-ref');if(el)el.textContent='DINNER-'+data.id}
+      if(data.id){
+        lastRsvpId = data.id;
+        el=document.getElementById('sum-ref-row');if(el)el.style.display='flex';
+        el=document.getElementById('sum-ref');if(el)el.textContent='DINNER-'+data.id;
+      }
+
+      const pCard = document.getElementById('pembayaranCard');
+      if(pCard){
+        if(hadir && amount > 0){
+          pCard.style.display = 'block';
+          document.getElementById('pay-amount-display').textContent = 'RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2});
+          if(cfg.bank_name)document.getElementById('bank-name-display').textContent = cfg.bank_name;
+          if(cfg.bank_acc_no)document.getElementById('bank-acc-no-display').textContent = cfg.bank_acc_no;
+          if(cfg.bank_acc_name)document.getElementById('bank-acc-name-display').textContent = cfg.bank_acc_name;
+          
+          const waNum = cfg.contact_phone || '60123456789';
+          const template = `Salam, saya ${name} (${phone}). Di bawah adalah resit pembayaran untuk RSVP Majlis Makan Malam.\n\nID Rujukan: DINNER-${data.id || ''}\nJumlah: RM ${amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}`;
+          document.getElementById('payment-wa-btn').href = `https://wa.me/${waNum.replace(/[^0-9]/g,'')}?text=` + encodeURIComponent(template);
+        } else {
+          pCard.style.display = 'none';
+        }
+      }
       document.getElementById('successView').scrollIntoView({behavior:'smooth'});
     }catch(innerErr){
       console.error('UI update error:',innerErr);
