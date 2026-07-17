@@ -13,7 +13,11 @@ export default {
 
     // ─── Health ───────────────────────────────────
     if (url.pathname === '/api/health') {
-      return new Response(JSON.stringify({ ok: true, db: !!env.DB }), {
+      return new Response(JSON.stringify({ 
+        ok: true, db: !!env.DB,
+        chip_key: !!env.CHIP_API_KEY,
+        chip_brand: env.CHIP_BRAND_ID || null
+      }), {
         headers: { ...headers, 'Content-Type': 'application/json' }
       });
     }
