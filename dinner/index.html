@@ -1003,13 +1003,22 @@ document.getElementById('tempohLainInput').addEventListener('input', calcCost);
 const paxNamesBox = document.getElementById('paxNames');
 function renderPaxNames(n){
   paxNamesBox.innerHTML = '';
+  const primaryName = document.getElementById('rsvp-name').value.trim();
   for(let i=1;i<=n;i++){
     const div = document.createElement('div');
     div.className = 'pax-name';
-    div.innerHTML = '<span>'+i+'.</span><input type="text" class="paxNameInput" placeholder="Nama ahli '+i+'">';
+    const val = (i === 1) ? primaryName : '';
+    div.innerHTML = '<span>'+i+'.</span><input type="text" class="paxNameInput" placeholder="Nama ahli '+i+'" value="'+esc(val)+'">';
     paxNamesBox.appendChild(div);
   }
 }
+
+document.getElementById('rsvp-name').addEventListener('input', (e)=>{
+  const firstPax = document.querySelector('.paxNameInput');
+  if(firstPax) {
+    firstPax.value = e.target.value;
+  }
+});
 
 // ─── COST ───
 function calcCost(){
