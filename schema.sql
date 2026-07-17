@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS rsvp (
   timestamp TEXT NOT NULL,
   haji_year TEXT DEFAULT NULL,
   address TEXT DEFAULT NULL,
-  jiai_haji TEXT DEFAULT 'tidak'
+  jiai_haji TEXT DEFAULT 'tidak',
+  receipt_url TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS config (

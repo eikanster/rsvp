@@ -115,8 +115,8 @@
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>Nama</th><th>Telefon</th><th>Tahun Haji</th><th>Alamat</th><th>Jemaah JIAI</th><th>Kehadiran</th><th>Pax</th><th>Bilik</th><th>Jumlah</th><th>Status</th><th>Tarikh</th></tr></thead>
-        <tbody id="rsvpBody"><tr><td colspan="12" class="empty"><div class="icon">⏳</div>Memuatkan...</td></tr></tbody>
+        <thead><tr><th>#</th><th>Nama</th><th>Telefon</th><th>Tahun Haji</th><th>Alamat</th><th>Jemaah JIAI</th><th>Kehadiran</th><th>Pax</th><th>Bilik</th><th>Jumlah</th><th>Resit</th><th>Status</th><th>Tarikh</th></tr></thead>
+        <tbody id="rsvpBody"><tr><td colspan="13" class="empty"><div class="icon">⏳</div>Memuatkan...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -153,6 +153,11 @@
       <div class="field-group"><label>Nama Kontak</label><input id="cfg-contact_name"></div>
       <div class="field-group"><label>No. Telefon</label><input id="cfg-contact_phone"></div>
     </div></div>
+    <div class="editor-section"><h3>🏦 Butiran Bank (Manual CIMB Transfer)</h3><div class="editor-grid">
+      <div class="field-group"><label>Nama Bank</label><input id="cfg-bank_name"></div>
+      <div class="field-group"><label>No. Akaun Bank</label><input id="cfg-bank_acc_no"></div>
+      <div class="field-group"><label>Nama Pemegang Akaun</label><input id="cfg-bank_acc_name"></div>
+    </div></div>
     <div style="text-align:right;margin-top:20px">
       <span class="save-status" id="saveStatus2"></span><button class="btn save" onclick="saveConfig()">💾 Simpan Semua</button>
     </div>
@@ -180,27 +185,28 @@ async function refresh(){
   try{const res=await fetch(API_RSVP),j=await res.json();allData=j.rsvps||[];
     document.getElementById('refreshedAt').textContent='Dikemaskini: '+new Date().toLocaleTimeString('ms-MY');
     render(currentFilter)
-  }catch(e){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="12" class="empty"><div class="icon">❌</div>Gagal</td></tr>'}
+  }catch(e){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="13" class="empty"><div class="icon">❌</div>Gagal</td></tr>'}
 }
 function setFilter(f){currentFilter=f;['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');render(f)}
 function render(f){
   let d=allData;if(f==='hadir')d=d.filter(r=>r.attendance==='hadir');if(f==='paid')d=d.filter(r=>r.payment_status==='paid'||r.payment_status==='confirmed');if(f==='pending')d=d.filter(r=>r.payment_status==='pending'||r.payment_status==='created');
   const hadir=allData.filter(r=>r.attendance==='hadir');const tp=hadir.reduce((s,r)=>s+(r.pax||0),0);const tr=allData.reduce((s,r)=>s+(r.amount||0),0);
   document.getElementById('statTotal').textContent=allData.length;document.getElementById('statHadir').textContent=hadir.length;document.getElementById('statPax').textContent=tp;document.getElementById('statRevenue').textContent='RM '+tr.toLocaleString('ms-MY',{minimumFractionDigits:2});
-  if(!d.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="12" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
+  if(!d.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="13" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
   document.getElementById('rsvpBody').innerHTML=d.map(r=>`<tr>
     <td>${r.id}</td><td><strong>${esc(r.name)}</strong></td><td><a style="color:var(--green)" href="https://wa.me/6${esc(String(r.phone).replace(/[^0-9]/g,''))}">${esc(r.phone)}</a></td>
     <td>${esc(r.haji_year||'-')}</td><td>${esc(r.address||'-')}</td>
     <td><span class="badge ${r.jiai_haji==='ya'?'badge-hadir':'badge-tidak'}">${esc(r.jiai_haji==='ya'?'✅ Ya':'❌ Tidak')}</span></td>
     <td><span class="badge ${r.attendance==='hadir'?'badge-hadir':'badge-tidak'}">${r.attendance==='hadir'?'✅ Hadir':'❌ Tidak'}</span></td>
     <td>${r.pax||'-'}</td><td>${r.accommodation?'✅':'—'}</td><td>RM ${(r.amount||0).toLocaleString('ms-MY',{minimumFractionDigits:2})}</td>
+    <td>${r.receipt_url ? `<a href="${esc(r.receipt_url)}" target="_blank" style="color:var(--green);font-weight:600">📄 Resit</a>` : '—'}</td>
     <td><span class="badge ${r.payment_status==='paid'||r.payment_status==='confirmed'?'badge-paid':'badge-pending'}">${r.payment_status==='paid'||r.payment_status==='confirmed'?'💳 Dibayar':'⏳ Belum'}</span></td>
     <td>${r.timestamp?new Date(r.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td></tr>`).join('')
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function exportCSV(){
-  const rows=[['ID','Nama','Telefon','Tahun Haji','Alamat','Jemaah JIAI','Kehadiran','Pax','Bilik','Jumlah','Status','Tarikh']];
-  allData.forEach(r=>rows.push([r.id,r.name,r.phone,r.haji_year,r.address,r.jiai_haji,r.attendance,r.pax,r.accommodation,r.amount,r.payment_status,r.timestamp]));
+  const rows=[['ID','Nama','Telefon','Tahun Haji','Alamat','Jemaah JIAI','Kehadiran','Pax','Bilik','Jumlah','Resit URL','Status','Tarikh']];
+  allData.forEach(r=>rows.push([r.id,r.name,r.phone,r.haji_year,r.address,r.jiai_haji,r.attendance,r.pax,r.accommodation,r.amount,r.receipt_url,r.payment_status,r.timestamp]));
   const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='dinner-rsvp.csv';a.click()
 }

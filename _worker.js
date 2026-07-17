@@ -85,67 +85,24 @@ async function handleRSVP(request, env, url, headers) {
     const hajiYear = p.get('haji_year')?.trim() || '';
     const address = p.get('address')?.trim() || '';
     const jiaiHaji = p.get('jiai_haji')?.trim() || 'tidak';
+    const receiptUrl = p.get('receipt_url')?.trim() || '';
 
     if (!name || !phone || !attendance) {
       return json({ error: 'Name, phone, and attendance are required' }, 400, headers);
     }
 
-    // For dinner: create CHIP checkout if amount > 0
-    let checkoutUrl = null;
-    let checkoutId = null;
-    if (amount > 0 && env.CHIP_API_KEY && env.CHIP_BRAND_ID) {
-      try {
-        const chipResp = await fetch('https://gate.chip-in.asia/api/v1/purchases/', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${env.CHIP_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            brand_id: env.CHIP_BRAND_ID,
-            client: {
-              email: `${phone.replace(/[^0-9]/g,'')}@rsvp.jayibrahim.com`,
-              full_name: name,
-              phone: phone.startsWith('+') ? phone : '+6' + phone.replace(/^\+/, ''),
-            },
-            purchase: {
-              currency: 'MYR',
-              products: [{
-                name: `${category === 'dinner' ? 'Dinner' : 'Event'} RSVP — ${name}`,
-                price: Math.round(amount * 100),
-              }],
-            },
-            success_redirect: `${url.origin}/${category}?status=success&id={checkout_id}`,
-            failure_redirect: `${url.origin}/${category}?status=failed&id={checkout_id}`,
-            success_callback: `${url.origin}/api/webhook`,
-            reference: `${category.toUpperCase()}-RSVP-${Date.now()}`,
-          }),
-        });
-        const chipData = await chipResp.json();
-        console.log('CHIP response:', JSON.stringify(chipData));
-        if (chipResp.ok && chipData.checkout_url) {
-          checkoutUrl = chipData.checkout_url;
-          checkoutId = chipData.id;
-        } else {
-          console.error('CHIP failed:', chipData);
-        }
-      } catch (e) {
-        console.error('CHIP error:', e);
-      }
-    }
-
     try {
       const { success, meta } = await env.DB.prepare(
-        `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp, haji_year, address, jiai_haji)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp, haji_year, address, jiai_haji, receipt_url)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(category, name, phone, attendance, pax, accommodation, amount, message,
-             amount > 0 ? 'pending' : 'free', checkoutId, timestamp, hajiYear, address, jiaiHaji).run();
+             amount > 0 ? 'pending' : 'free', null, timestamp, hajiYear, address, jiaiHaji, receiptUrl).run();
 
       if (!success) {
         return json({ error: 'Failed to save to database' }, 500, headers);
       }
 
-      return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId }, 200, headers);
+      return json({ ok: true, id: meta.last_row_id }, 200, headers);
     } catch (e) {
       return json({ error: 'Database save error: ' + e.message }, 500, headers);
     }

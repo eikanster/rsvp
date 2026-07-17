@@ -745,6 +745,27 @@
     </div>
   </div>
 
+  <!-- SECTION: Pembayaran (Conditional) -->
+  <div class="card conditional" id="pembayaranCard" style="display:none;">
+    <div class="sec-title"><span class="sec-num">💳</span>Pembayaran (CIMB)</div>
+    <p style="font-size:13px;color:var(--gold);margin-bottom:12px;opacity:0.9;line-height:1.6">
+      Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi sebelum menghantar borang.
+    </p>
+    <div style="background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8">
+      <div><strong>Bank:</strong> <span id="bank-name-display">CIMB Bank</span></div>
+      <div><strong>No. Akaun:</strong> <span id="bank-acc-no-display">1234-5678-9012</span></div>
+      <div><strong>Nama Akaun:</strong> <span id="bank-acc-name-display">JAY IBRAHIM AL ISLAM</span></div>
+    </div>
+    
+    <label class="field">Muat Naik Resit Transaksi</label>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <input type="file" id="receiptFile" accept="image/*,application/pdf" style="display:none;" onchange="uploadReceipt(this)">
+      <button type="button" class="btn" style="background:var(--deep);color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;" onclick="document.getElementById('receiptFile').click()">📤 Pilih Resit</button>
+      <span id="receiptStatus" style="font-size:12px;color:var(--gold);opacity:0.8;">Tiada fail dipilih</span>
+    </div>
+    <input type="hidden" id="rsvp-receipt-url" value="">
+  </div>
+
   <!-- SECTION 4: Butiran Majlis -->
   <div class="card">
     <div class="sec-title"><span class="sec-num">📅</span>Butiran Majlis</div>
@@ -782,11 +803,8 @@
       <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
       <div class="summary-row" id="sum-amount-row" style="display:none"><span class="slabel">Jumlah</span><span class="svalue amount" id="sum-amount">—</span></div>
       <div class="summary-row" id="sum-msg-row" style="display:none"><span class="slabel">Nota</span><span class="svalue" id="sum-message">—</span></div>
+      <div class="summary-row" id="sum-receipt-row" style="display:none"><span class="slabel">Resit</span><span class="svalue" id="sum-receipt">—</span></div>
       <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
-    </div>
-    <div class="checkout-box" id="checkoutBox" style="display:none">
-      <a class="checkout-btn" id="checkoutBtn" href="#" target="_blank">💳 Bayar Sekarang</a>
-      <p class="checkout-hint">Pembayaran melalui CHIP (FPX / Kad / eWallet)</p>
     </div>
   </div>
 
@@ -869,6 +887,44 @@ function applyConfig(){
   if(cfg.footer_text)document.getElementById('footer-text').textContent=cfg.footer_text;
   if(cfg.contact_name)document.getElementById('contact-name').textContent=cfg.contact_name;
   if(cfg.contact_phone)document.getElementById('contact-wa').href='https://wa.me/'+cfg.contact_phone;
+  if(cfg.bank_name)document.getElementById('bank-name-display').textContent=cfg.bank_name;
+  if(cfg.bank_acc_no)document.getElementById('bank-acc-no-display').textContent=cfg.bank_acc_no;
+  if(cfg.bank_acc_name)document.getElementById('bank-acc-name-display').textContent=cfg.bank_acc_name;
+}
+
+// ─── RECEIPT UPLOAD ───
+async function uploadReceipt(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('receiptStatus');
+  status.textContent = '⏳ Memuat naik...';
+  
+  try {
+    let uploadFile = file;
+    if (file.type.startsWith('image/')) {
+      uploadFile = await compressImage(file, 1000, 0.8);
+    }
+    const fd = new FormData();
+    fd.append('file', uploadFile, file.name);
+    
+    const res = await fetch('/api/upload?category=receipt', {
+      method: 'POST',
+      body: fd
+    });
+    const data = await res.json();
+    
+    if (data.url) {
+      document.getElementById('rsvp-receipt-url').value = data.url;
+      status.textContent = '✅ Berjaya dimuat naik!';
+      status.style.color = '#467235';
+    } else {
+      throw new Error(data.error || 'Upload failed');
+    }
+  } catch (e) {
+    status.textContent = '❌ Gagal. Cuba lagi.';
+    status.style.color = '#f43f5e';
+    console.error('Receipt upload error:', e);
+  }
 }
 
 // ─── TOGGLE: Hadir (Ya/Tidak) ───
@@ -947,6 +1003,19 @@ function calcCost(){
   document.getElementById('costAcco').textContent = 'RM '+accoCost;
   const total = paxCost+accoCost;
   document.getElementById('costTotal').textContent = 'RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
+  
+  const pCard = document.getElementById('pembayaranCard');
+  if(pCard){
+    if(total > 0){
+      pCard.style.display = 'block';
+      document.getElementById('pay-amount-display').textContent = 'RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
+    } else {
+      pCard.style.display = 'none';
+      document.getElementById('rsvp-receipt-url').value = '';
+      document.getElementById('receiptStatus').textContent = 'Tiada fail dipilih';
+    }
+  }
+  
   document.getElementById('btnSubmit').textContent = total>0 ? 'Semak & Hantar RSVP (RM '+total+')' : 'Semak & Hantar RSVP';
 }
 
@@ -961,9 +1030,17 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   }
   document.getElementById('errText').style.display='none';
 
+  const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
+  const totalCost = document.getElementById('costTotal').textContent;
+  const costAmt = parseFloat(totalCost.replace(/[^\d.]/g,'')) || 0;
+  const receiptUrl = document.getElementById('rsvp-receipt-url').value;
+  if(hadir && costAmt > 0 && !receiptUrl){
+    alert('Sila muat naik resit pembayaran terlebih dahulu.');
+    return;
+  }
+
   const hajiYearVal = document.querySelector('input[name=haji_year]:checked').value;
   const addressVal = document.getElementById('rsvp-address').value.trim();
-  const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
   const jiaiHajiVal = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya' ? 'Ya' : 'Tidak';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const paxVal = paxSel ? (paxSel.value==='lain'?document.getElementById('paxLainInput').value:paxSel.value) : '—';
@@ -972,7 +1049,6 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   const tempohSel = document.querySelector('input[name=tempoh]:checked');
   const tempohVal = tempohSel ? (tempohSel.value==='lain'?document.getElementById('tempohLainInput').value:tempohSel.value) : '—';
   const msg = document.getElementById('rsvp-message').value.trim();
-  const totalCost = document.getElementById('costTotal').textContent;
 
   let rows = [
     ['Nama',name],['No. tel',phone],
@@ -986,6 +1062,9 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
     if(paxNamesArr.length)rows.push(['Nama tambahan',paxNamesArr.join(', ')]);
     rows.push(['Penginapan',inapYa?tempohVal:'Tidak']);
     rows.push(['Anggaran kos',totalCost]);
+    if(costAmt > 0 && receiptUrl){
+      rows.push(['Resit Pembayaran','✅ Terlampir']);
+    }
   }
   if(msg)rows.push(['Ucapan',msg]);
 
@@ -1013,12 +1092,13 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   const billable = (jiai_haji === 'ya' && pax > 0) ? pax - 1 : pax;
   const amount = (billable*pricePax) + (malam*priceAcco);
   const msg = document.getElementById('rsvp-message').value.trim();
+  const receipt_url = document.getElementById('rsvp-receipt-url').value;
 
   const btn = document.getElementById('btnConfirm');
   btn.textContent = '⏳ Menghantar...'; btn.classList.add('loading');
   try{
     const res = await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString(),haji_year,address,jiai_haji}).toString()});
+      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString(),haji_year,address,jiai_haji,receipt_url}).toString()});
     const data = await res.json();
     try{
       document.getElementById('modalOverlay').classList.remove('open');
@@ -1047,11 +1127,11 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
         if(amount>0){el=document.getElementById('sum-amount-row');if(el)el.style.display='flex';el=document.getElementById('sum-amount');if(el)el.textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
       }
       if(msg){el=document.getElementById('sum-msg-row');if(el)el.style.display='flex';el=document.getElementById('sum-message');if(el)el.textContent=msg}
-      if(data.id){el=document.getElementById('sum-ref-row');if(el)el.style.display='flex';el=document.getElementById('sum-ref');if(el)el.textContent='DINNER-'+data.id}
-      if(data.checkoutUrl){
-        el=document.getElementById('checkoutBox');if(el)el.style.display='block';
-        el=document.getElementById('checkoutBtn');if(el)el.href=data.checkoutUrl;
+      if(receipt_url){
+        el=document.getElementById('sum-receipt-row');if(el)el.style.display='flex';
+        el=document.getElementById('sum-receipt');if(el)el.innerHTML=`<a href="${esc(receipt_url)}" target="_blank" style="color:var(--gold);text-decoration:underline">Lihat Resit</a>`;
       }
+      if(data.id){el=document.getElementById('sum-ref-row');if(el)el.style.display='flex';el=document.getElementById('sum-ref');if(el)el.textContent='DINNER-'+data.id}
       document.getElementById('successView').scrollIntoView({behavior:'smooth'});
     }catch(innerErr){
       console.error('UI update error:',innerErr);
