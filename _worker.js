@@ -101,27 +101,30 @@ async function handleRSVP(request, env, url, headers) {
           body: JSON.stringify({
             brand_id: env.CHIP_BRAND_ID,
             client: {
+              email: `${phone.replace(/[^0-9]/g,'')}@rsvp.jayibrahim.com`,
               full_name: name,
               phone: phone.startsWith('+') ? phone : '+6' + phone.replace(/^\+/, ''),
             },
             purchase: {
+              currency: 'MYR',
               products: [{
                 name: `${category === 'dinner' ? 'Dinner' : 'Event'} RSVP — ${name}`,
-                price: Math.round(amount * 100), // CHIP expects sen
-                quantity: 1,
+                price: Math.round(amount * 100),
               }],
-              total: Math.round(amount * 100),
-              notes: `${category} RSVP — ${name} / ${phone} / ${pax} pax`,
             },
             success_redirect: `${url.origin}/${category}?status=success&id={checkout_id}`,
             failure_redirect: `${url.origin}/${category}?status=failed&id={checkout_id}`,
             success_callback: `${url.origin}/api/webhook`,
+            reference: `${category.toUpperCase()}-RSVP-${Date.now()}`,
           }),
         });
         const chipData = await chipResp.json();
-        if (chipData.checkout_url) {
+        console.log('CHIP response:', JSON.stringify(chipData));
+        if (chipResp.ok && chipData.checkout_url) {
           checkoutUrl = chipData.checkout_url;
           checkoutId = chipData.id;
+        } else {
+          console.error('CHIP failed:', chipData);
         }
       } catch (e) {
         console.error('CHIP error:', e);
