@@ -119,7 +119,7 @@ async function handleRSVP(request, env, url, headers) {
       }
     }
 
-    const { success } = await env.DB.prepare(
+    const { success, meta } = await env.DB.prepare(
       `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(category, name, phone, attendance, pax, accommodation, amount, message,
@@ -129,7 +129,7 @@ async function handleRSVP(request, env, url, headers) {
       return json({ error: 'Failed to save' }, 500, headers);
     }
 
-    return json({ ok: true, checkoutUrl, checkoutId }, 200, headers);
+    return json({ ok: true, id: meta.last_row_id, checkoutUrl, checkoutId }, 200, headers);
   }
 
   return json({ error: 'Method not allowed' }, 405, headers);

@@ -125,6 +125,19 @@
   }
   .rsvp-done .checkout a:hover{transform:scale(1.03)}
 
+  .done-icon{font-size:52px;margin-bottom:8px}
+  .done-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:20px}
+  .summary-card{
+    background:var(--green-light);border:1px solid rgba(13,110,110,0.15);
+    border-radius:12px;padding:16px 20px;margin:0 auto 16px;max-width:360px;text-align:left;
+  }
+  .summary-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(13,110,110,0.06)}
+  .summary-row:last-child{border-bottom:none}
+  .slabel{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);font-weight:600;flex-shrink:0}
+  .svalue{font-size:0.85rem;color:var(--text);font-weight:500;text-align:right}
+  .svalue.amount{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green-dark);font-weight:700}
+  .svalue.ref{font-family:monospace;font-size:0.78rem;color:var(--gold-dark);font-weight:600}
+
   .total-box{
     background:var(--green-light);border:1px solid rgba(13,110,110,0.2);
     border-radius:10px;padding:12px 16px;margin-top:14px;
@@ -266,9 +279,19 @@
     </form>
 
     <div class="rsvp-done" id="rsvpSuccess">
-      <div class="icon">🎉</div>
-      <h3>RSVP Diterima!</h3>
-      <p id="rsvpDoneMsg">Kehadiran anda telah direkodkan.</p>
+      <div class="done-icon">✅</div>
+      <h3>Terima Kasih!</h3>
+      <p class="done-sub">Kehadiran anda telah direkodkan.</p>
+      <div class="summary-card" id="summaryCard">
+        <div class="summary-row"><span class="slabel">Nama</span><span class="svalue" id="sum-name">—</span></div>
+        <div class="summary-row"><span class="slabel">Telefon</span><span class="svalue" id="sum-phone">—</span></div>
+        <div class="summary-row"><span class="slabel">Kehadiran</span><span class="svalue" id="sum-attendance">—</span></div>
+        <div class="summary-row" id="sum-pax-row" style="display:none"><span class="slabel">Pax</span><span class="svalue" id="sum-pax">—</span></div>
+        <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
+        <div class="summary-row" id="sum-amount-row" style="display:none"><span class="slabel">Jumlah</span><span class="svalue amount" id="sum-amount">—</span></div>
+        <div class="summary-row" id="sum-msg-row" style="display:none"><span class="slabel">Nota</span><span class="svalue" id="sum-message">—</span></div>
+        <div class="summary-row" id="sum-ref-row" style="display:none"><span class="slabel">Rujukan</span><span class="svalue ref" id="sum-ref">—</span></div>
+      </div>
       <div class="checkout" id="checkoutLink" style="display:none">
         <a id="checkoutBtn" href="#" target="_blank">💳 Bayar Sekarang</a>
         <p style="font-size:0.7rem;margin-top:8px;color:var(--text-muted)">Pembayaran melalui CHIP (FPX / Kad / eWallet)</p>
@@ -357,11 +380,22 @@ async function submitRSVP(e){
     const data=await res.json();
     document.getElementById('rsvpForm').style.display='none';
     document.getElementById('rsvpSuccess').style.display='block';
+    // Populate summary
+    document.getElementById('sum-name').textContent=name;
+    document.getElementById('sum-phone').textContent=phone;
+    const attLabels={'hadir':'✅ Hadir','tidak-hadir':'❌ Tidak Hadir'};
+    document.getElementById('sum-attendance').textContent=attLabels[attendance]||attendance;
+    if(attendance==='hadir'&&pax>0){
+      document.getElementById('sum-pax-row').style.display='flex';document.getElementById('sum-pax').textContent=pax+' orang';
+      if(acco>0){document.getElementById('sum-acco-row').style.display='flex';document.getElementById('sum-acco').textContent='1 bilik (RM '+priceAcco+')'}
+      if(amount>0){document.getElementById('sum-amount-row').style.display='flex';document.getElementById('sum-amount').textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
+    }
+    if(message){document.getElementById('sum-msg-row').style.display='flex';document.getElementById('sum-message').textContent=message}
+    if(data.id){document.getElementById('sum-ref-row').style.display='flex';document.getElementById('sum-ref').textContent='DINNER-'+data.id}
     if(data.checkoutUrl){
-      document.getElementById('rsvpDoneMsg').textContent='Sila lengkapkan pembayaran untuk mengesahkan kehadiran.';
       document.getElementById('checkoutLink').style.display='block';document.getElementById('checkoutBtn').href=data.checkoutUrl;
       setTimeout(()=>{window.open(data.checkoutUrl,'_blank')},1500);
-    }else{document.getElementById('rsvpDoneMsg').textContent='Kehadiran anda telah direkodkan. Jumpa di majlis!'}
+    }
     document.getElementById('rsvpSuccess').scrollIntoView({behavior:'smooth'});
   }catch(err){showToast('❌ Ralat sambungan. Cuba lagi.');btn.disabled=false;btn.textContent=amount>0?'📨 Hantar RSVP & Bayar (RM '+amount+')':'📨 Hantar RSVP'}
 }
@@ -375,12 +409,13 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
   if(status==='success'){
     document.getElementById('rsvpForm').style.display='none';
     document.getElementById('rsvpSuccess').style.display='block';
-    document.getElementById('rsvpDoneMsg').innerHTML='✅ <strong>Pembayaran Berjaya!</strong><br>No. Rujukan: <strong>DINNER-'+esc(id||'?')+'</strong>';
+    document.getElementById('sum-ref-row').style.display='flex';
+    document.getElementById('sum-ref').textContent='DINNER-'+esc(id||'?');
     document.getElementById('checkoutLink').style.display='none';
   }else if(status==='failed'){
     document.getElementById('rsvpForm').style.display='none';
     document.getElementById('rsvpSuccess').style.display='block';
-    document.getElementById('rsvpDoneMsg').innerHTML='❌ Pembayaran tidak berjaya.<br>Sila cuba lagi atau hubungi kami.';
+    document.querySelector('.done-sub').textContent='Pembayaran tidak berjaya. Sila cuba lagi atau hubungi kami.';
     document.getElementById('checkoutLink').style.display='none';
   }
 })();
