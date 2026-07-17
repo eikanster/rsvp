@@ -345,6 +345,11 @@ if (location.hostname.startsWith('dinner') && location.pathname === '/') locatio
       <span id="cover-groom">Pengantin Lelaki</span>
     </div>
     <div class="cover-label" id="cover-label">Walimatulurus</div>
+    
+    <div class="guest-card" id="guestCard" style="display: none; margin: 24px auto; padding: 14px 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; backdrop-filter: blur(10px); max-width: 290px; width: 90%; box-shadow: 0 8px 24px rgba(0,0,0,0.25);">
+      <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #FEF3C7; margin-bottom: 4px; font-weight: 500;">Undangan Khas Kepada:</p>
+      <h4 style="font-size: 16px; color: #fff; font-weight: 700; margin: 0;" id="guestNameDisplay">Nama Tetamu</h4>
+    </div>
   </div>
   <button class="btn-reveal" onclick="revealInvitation()">💍 Buka Jemputan</button>
 </div>
@@ -670,6 +675,19 @@ async function submitRSVP(e) {
 // ============ INIT ============
 bgMusic.load();
 loadConfig();
+
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const toName = params.get('to') || params.get('nama');
+  if (toName) {
+    const display = document.getElementById('guestNameDisplay');
+    const card = document.getElementById('guestCard');
+    if (display && card) {
+      display.textContent = toName;
+      card.style.display = 'block';
+    }
+  }
+})();
 </script>
 </body>
 </html>
