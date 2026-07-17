@@ -1010,7 +1010,6 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
       if(data.checkoutUrl){
         el=document.getElementById('checkoutBox');if(el)el.style.display='block';
         el=document.getElementById('checkoutBtn');if(el)el.href=data.checkoutUrl;
-        setTimeout(()=>window.open(data.checkoutUrl,'_blank'),1500);
       }
       document.getElementById('successView').scrollIntoView({behavior:'smooth'});
     }catch(innerErr){
