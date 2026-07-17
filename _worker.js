@@ -82,6 +82,8 @@ async function handleRSVP(request, env, url, headers) {
     const amount = parseInt(p.get('amount')) || 0;
     const message = p.get('message')?.trim() || '';
     const timestamp = new Date().toISOString();
+    const hajiYear = p.get('haji_year')?.trim() || '';
+    const address = p.get('address')?.trim() || '';
 
     if (!name || !phone || !attendance) {
       return json({ error: 'Name, phone, and attendance are required' }, 400, headers);
@@ -133,10 +135,10 @@ async function handleRSVP(request, env, url, headers) {
 
     try {
       const { success, meta } = await env.DB.prepare(
-        `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO rsvp (category, name, phone, attendance, pax, accommodation, amount, message, payment_status, checkout_id, timestamp, haji_year, address)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).bind(category, name, phone, attendance, pax, accommodation, amount, message,
-             amount > 0 ? 'pending' : 'free', checkoutId, timestamp).run();
+             amount > 0 ? 'pending' : 'free', checkoutId, timestamp, hajiYear, address).run();
 
       if (!success) {
         return json({ error: 'Failed to save to database' }, 500, headers);

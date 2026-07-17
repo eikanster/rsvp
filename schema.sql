@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS rsvp (
   message TEXT DEFAULT '',
   payment_status TEXT DEFAULT 'free',
   checkout_id TEXT DEFAULT NULL,
-  timestamp TEXT NOT NULL
+  timestamp TEXT NOT NULL,
+  haji_year TEXT DEFAULT NULL,
+  address TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS config (

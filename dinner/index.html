@@ -10,15 +10,15 @@
   :root {
     --ink: #f8fafc;
     --ink-dark: #0f172a;
-    --paper: #061711;
-    --deep: #b6863d;
-    --deep-2: #8c6527;
-    --gold: #f3e5c8;
-    --gold-soft: #b6863d;
-    --line: rgba(182, 134, 61, 0.35);
-    --card-bg: rgba(10, 30, 22, 0.7);
+    --paper: #283F24;
+    --deep: #467235;
+    --deep-2: #1e331a;
+    --gold: #FFF78D;
+    --gold-soft: #FFBF00;
+    --line: rgba(255, 191, 0, 0.35);
+    --card-bg: rgba(40, 63, 36, 0.75);
     --danger: #f43f5e;
-    --ok: #10b981;
+    --ok: #467235;
     --radius: 16px;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
@@ -45,7 +45,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f7ce46 0%, #b8860b 40%, #061711 100%);
+    background: radial-gradient(circle at center, #FFBF00 0%, #b8860b 50%, #283F24 100%);
     padding: 30px 20px;
     text-align: center;
     transition: all 0.80s cubic-bezier(0.77, 0, 0.175, 1);
@@ -147,7 +147,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: rgba(6, 23, 17, 0.45);
+    background: rgba(40, 63, 36, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     border-radius: var(--radius);
@@ -670,10 +670,19 @@
     <div class="sec-title"><span class="sec-num">1</span>Butiran Tetamu</div>
 
     <label class="field">Nama penuh</label>
-    <input type="text" id="rsvp-name" placeholder="Nama anda...">
+    <input type="text" id="rsvp-name" placeholder="Nama seperti dalam IC/Pasport">
 
     <label class="field">No. telefon</label>
     <input type="tel" id="rsvp-phone" placeholder="012-3456789">
+
+    <label class="field">Jemaah haji tahun bila?</label>
+    <div class="toggle-row" id="hajiTahunToggle" style="margin-bottom: 14px;">
+      <label class="pill active"><input type="radio" name="haji_year" value="1446H (2025M)" checked><span>1446H (2025M)</span></label>
+      <label class="pill"><input type="radio" name="haji_year" value="1447H (2026M)"><span>1447H (2026M)</span></label>
+    </div>
+
+    <label class="field">Alamat</label>
+    <textarea id="rsvp-address" placeholder="Alamat surat-menyurat"></textarea>
   </div>
 
   <!-- SECTION 2: Kehadiran -->
@@ -769,6 +778,8 @@
     <div class="summary-card">
       <div class="summary-row"><span class="slabel">Nama</span><span class="svalue" id="sum-name">—</span></div>
       <div class="summary-row"><span class="slabel">Telefon</span><span class="svalue" id="sum-phone">—</span></div>
+      <div class="summary-row" id="sum-haji-row" style="display:none"><span class="slabel">Tahun Haji</span><span class="svalue" id="sum-haji">—</span></div>
+      <div class="summary-row" id="sum-address-row" style="display:none"><span class="slabel">Alamat</span><span class="svalue" id="sum-address">—</span></div>
       <div class="summary-row"><span class="slabel">Kehadiran</span><span class="svalue" id="sum-attendance">—</span></div>
       <div class="summary-row" id="sum-pax-row" style="display:none"><span class="slabel">Pax</span><span class="svalue" id="sum-pax">—</span></div>
       <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
@@ -871,6 +882,7 @@ function setupToggle(name, boxId){
 }
 setupToggle('hadir','hadirBox');
 setupToggle('inap','inapBox');
+setupToggle('haji_year');
 
 // ─── PILL GROUPS: pax + tempoh ───
 document.querySelectorAll('input[name=pax]').forEach(inp=>{
@@ -939,6 +951,8 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   }
   document.getElementById('errText').style.display='none';
 
+  const hajiYearVal = document.querySelector('input[name=haji_year]:checked').value;
+  const addressVal = document.getElementById('rsvp-address').value.trim();
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const paxVal = paxSel ? (paxSel.value==='lain'?document.getElementById('paxLainInput').value:paxSel.value) : '—';
@@ -951,8 +965,10 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
 
   let rows = [
     ['Nama',name],['No. tel',phone],
-    ['Kehadiran',hadir?'✅ Hadir':'❌ Tidak Hadir'],
+    ['Tahun Haji',hajiYearVal]
   ];
+  if(addressVal) rows.push(['Alamat',addressVal]);
+  rows.push(['Kehadiran',hadir?'✅ Hadir':'❌ Tidak Hadir']);
   if(hadir){
     rows.push(['Bilangan pax',paxVal+' pax']);
     if(paxNamesArr.length)rows.push(['Nama tambahan',paxNamesArr.join(', ')]);
@@ -973,6 +989,8 @@ document.getElementById('btnCancel').addEventListener('click', ()=>{
 document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   const name = document.getElementById('rsvp-name').value.trim();
   const phone = document.getElementById('rsvp-phone').value.trim();
+  const haji_year = document.querySelector('input[name=haji_year]:checked').value;
+  const address = document.getElementById('rsvp-address').value.trim();
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const pax = hadir ? (paxSel ? (paxSel.value==='lain'?parseInt(document.getElementById('paxLainInput').value)||0:parseInt(paxSel.value)) : 1) : 0;
@@ -986,7 +1004,7 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   btn.textContent = '⏳ Menghantar...'; btn.classList.add('loading');
   try{
     const res = await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString()}).toString()});
+      body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString(),haji_year,address}).toString()});
     const data = await res.json();
     try{
       document.getElementById('modalOverlay').classList.remove('open');
@@ -998,6 +1016,15 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
       var el;
       el=document.getElementById('sum-name');if(el)el.textContent=name;
       el=document.getElementById('sum-phone');if(el)el.textContent=phone;
+      
+      el=document.getElementById('sum-haji-row');if(el)el.style.display='flex';
+      el=document.getElementById('sum-haji');if(el)el.textContent=haji_year;
+      
+      if(address){
+        el=document.getElementById('sum-address-row');if(el)el.style.display='flex';
+        el=document.getElementById('sum-address');if(el)el.textContent=address;
+      }
+      
       el=document.getElementById('sum-attendance');if(el)el.textContent=hadir?'✅ Hadir':'❌ Tidak Hadir';
       if(hadir){
         el=document.getElementById('sum-pax-row');if(el)el.style.display='flex';
