@@ -442,6 +442,12 @@
     </div>
   </div>
 
+  <footer id="footer" style="text-align:center;padding:24px 0 16px;color:#8a8270;font-size:12px;line-height:2">
+    <div style="font-size:15px;font-weight:700;color:var(--deep)" id="footer-brand">Jay Ibrahim Al Islam</div>
+    <p id="footer-text">Terima kasih kerana sudi hadir</p>
+    <small>Pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--deep)" id="contact-wa" href="#">WhatsApp</a></small>
+  </footer>
+
 </main>
 
 <div class="submit-bar">
@@ -493,6 +499,10 @@ function applyConfig(){
   document.getElementById('opt-price').textContent=pricePax;
   document.getElementById('acco-price').textContent=priceAcco;
   if(cfg.rsvp_deadline)document.getElementById('rsvp-deadline').textContent=cfg.rsvp_deadline;
+  if(cfg.company_name)document.getElementById('footer-brand').textContent=cfg.company_name;
+  if(cfg.footer_text)document.getElementById('footer-text').textContent=cfg.footer_text;
+  if(cfg.contact_name)document.getElementById('contact-name').textContent=cfg.contact_name;
+  if(cfg.contact_phone)document.getElementById('contact-wa').href='https://wa.me/'+cfg.contact_phone;
 }
 
 // ─── TOGGLE: Hadir (Ya/Tidak) ───
@@ -655,7 +665,8 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
     document.getElementById('successView').scrollIntoView({behavior:'smooth'});
   }catch(e){
     btn.textContent='Hantar RSVP';btn.classList.remove('loading');
-    alert('❌ Ralat sambungan. Cuba lagi.');
+    console.error('Submit error:',e);
+    alert('❌ Ralat: '+(e.message||'Sambungan gagal. Cuba lagi.'));
   }
 });
 
