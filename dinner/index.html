@@ -756,16 +756,7 @@
     <div class="map-wrap" id="map-wrap"><iframe id="map-frame" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
 
-  <!-- GALLERY -->
-  <div class="card">
-    <div class="sec-title"><span class="sec-num">📸</span>Galeri</div>
-    <div class="gallery" id="gallery">
-      <div class="gallery-item"><span class="gallery-placeholder">#1</span></div>
-      <div class="gallery-item"><span class="gallery-placeholder">#2</span></div>
-      <div class="gallery-item"><span class="gallery-placeholder">#3</span></div>
-      <div class="gallery-item"><span class="gallery-placeholder">#4</span></div>
-    </div>
-  </div>
+
 
   <!-- SECTION 5: Hantar -->
   <div class="card">
@@ -857,9 +848,12 @@ function applyConfig(){
   } else {
     document.getElementById('map-wrap').style.display='none';
   }
-  const gal=document.getElementById('gallery');let h='';
-  for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">#'+i+'</span></div>'}
-  gal.innerHTML=h;
+  const gal=document.getElementById('gallery');
+  if(gal){
+    let h='';
+    for(let i=1;i<=4;i++){const u=cfg['gallery_'+i];h+=u?'<div class="gallery-item"><img src="'+esc(u)+'" alt="Galeri '+i+'" loading="lazy"></div>':'<div class="gallery-item"><span class="gallery-placeholder">#'+i+'</span></div>'}
+    gal.innerHTML=h;
+  }
   pricePax=parseInt(cfg.price_per_pax)||220;priceAcco=parseInt(cfg.price_accommodation)||450;
   document.getElementById('opt-price').textContent=pricePax;
   document.getElementById('acco-price').textContent=priceAcco;
