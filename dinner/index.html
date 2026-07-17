@@ -640,29 +640,35 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
     const res = await fetch(API_RSVP,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
       body:new URLSearchParams({secret:SECRET,name,phone,attendance:hadir?'hadir':'tidak-hadir',pax,accommodation:malam>0?1:0,amount,message:msg,timestamp:new Date().toISOString()}).toString()});
     const data = await res.json();
-    document.getElementById('modalOverlay').classList.remove('open');
-    // Hide all cards except success
-    document.getElementById('submitBar').style.display='none';
-    document.querySelectorAll('main>.card').forEach(c=>{if(c.id!=='successView')c.style.display='none'});
-    document.getElementById('successView').style.display='block';
+    try{
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.getElementById('submitBar').style.display='none';
+      document.querySelectorAll('main>.card').forEach(c=>{if(c.id!=='successView')c.style.display='none'});
+      var f=document.getElementById('footer');if(f)f.style.display='none';
+      document.getElementById('successView').style.display='block';
 
-    document.getElementById('sum-name').textContent=name;
-    document.getElementById('sum-phone').textContent=phone;
-    document.getElementById('sum-attendance').textContent=hadir?'✅ Hadir':'❌ Tidak Hadir';
-    if(hadir){
-      document.getElementById('sum-pax-row').style.display='flex';
-      document.getElementById('sum-pax').textContent=pax+' orang';
-      if(malam>0){document.getElementById('sum-acco-row').style.display='flex';document.getElementById('sum-acco').textContent=malam+' malam (RM '+(malam*priceAcco)+')'}
-      if(amount>0){document.getElementById('sum-amount-row').style.display='flex';document.getElementById('sum-amount').textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
+      var el;
+      el=document.getElementById('sum-name');if(el)el.textContent=name;
+      el=document.getElementById('sum-phone');if(el)el.textContent=phone;
+      el=document.getElementById('sum-attendance');if(el)el.textContent=hadir?'✅ Hadir':'❌ Tidak Hadir';
+      if(hadir){
+        el=document.getElementById('sum-pax-row');if(el)el.style.display='flex';
+        el=document.getElementById('sum-pax');if(el)el.textContent=pax+' orang';
+        if(malam>0){el=document.getElementById('sum-acco-row');if(el)el.style.display='flex';el=document.getElementById('sum-acco');if(el)el.textContent=malam+' malam (RM '+(malam*priceAcco)+')'}
+        if(amount>0){el=document.getElementById('sum-amount-row');if(el)el.style.display='flex';el=document.getElementById('sum-amount');if(el)el.textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
+      }
+      if(msg){el=document.getElementById('sum-msg-row');if(el)el.style.display='flex';el=document.getElementById('sum-message');if(el)el.textContent=msg}
+      if(data.id){el=document.getElementById('sum-ref-row');if(el)el.style.display='flex';el=document.getElementById('sum-ref');if(el)el.textContent='DINNER-'+data.id}
+      if(data.checkoutUrl){
+        el=document.getElementById('checkoutBox');if(el)el.style.display='block';
+        el=document.getElementById('checkoutBtn');if(el)el.href=data.checkoutUrl;
+        setTimeout(()=>window.open(data.checkoutUrl,'_blank'),1500);
+      }
+      document.getElementById('successView').scrollIntoView({behavior:'smooth'});
+    }catch(innerErr){
+      console.error('UI update error:',innerErr);
+      alert('✅ RSVP diterima! (UI update: '+(innerErr.message||'')+')');
     }
-    if(msg){document.getElementById('sum-msg-row').style.display='flex';document.getElementById('sum-message').textContent=msg}
-    if(data.id){document.getElementById('sum-ref-row').style.display='flex';document.getElementById('sum-ref').textContent='DINNER-'+data.id}
-    if(data.checkoutUrl){
-      document.getElementById('checkoutBox').style.display='block';
-      document.getElementById('checkoutBtn').href=data.checkoutUrl;
-      setTimeout(()=>window.open(data.checkoutUrl,'_blank'),1500);
-    }
-    document.getElementById('successView').scrollIntoView({behavior:'smooth'});
   }catch(e){
     btn.textContent='Hantar RSVP';btn.classList.remove('loading');
     console.error('Submit error:',e);
