@@ -693,7 +693,6 @@
       <label class="pill ya"><input type="radio" name="hadir" value="hadir"><span>Ya</span></label>
       <label class="pill tidak active"><input type="radio" name="hadir" value="tidak-hadir" checked><span>Tidak</span></label>
     </div>
-    <div class="note">RM<span id="opt-price">220</span>/pax — umur 12 tahun ke atas sahaja. Seat terhad.</div>
 
     <div class="conditional" id="hadirBox">
       <label class="field">Adakah anda jemaah haji JIAI?</label>
@@ -711,11 +710,12 @@
       </div>
       <input type="text" id="paxLainInput" placeholder="Nyatakan bilangan" style="margin-top:8px;display:none;">
       <div id="paxNames"></div>
+      <div class="note" id="paxNote" style="margin-top:12px;">RM<span id="opt-price">220</span>/pax — umur 12 tahun ke atas sahaja. Seat terhad.</div>
     </div>
   </div>
 
   <!-- SECTION 3: Penginapan -->
-  <div class="card">
+  <div class="card" id="inapCard" style="display:none;">
     <div class="sec-title"><span class="sec-num">3</span>Penginapan</div>
     <label class="field">Perlukan penginapan?</label>
     <div class="toggle-row" id="inapToggle">
@@ -736,7 +736,7 @@
   </div>
 
   <!-- COST SUMMARY -->
-  <div class="card cost-card">
+  <div class="card cost-card" id="costCard" style="display:none;">
     <div class="sec-title"><span class="sec-num">RM</span>Anggaran Kos Tambahan</div>
     <div id="costLines">
       <div class="cost-line"><span>Ahli tambahan</span><span id="costPax">RM 0</span></div>
@@ -938,6 +938,12 @@ function setupToggle(name, boxId){
         const box = document.getElementById(boxId);
         const isYa = document.querySelector('input[name='+name+']:checked').value === 'ya' || document.querySelector('input[name='+name+']:checked').value === 'hadir';
         box.classList.toggle('open', isYa);
+        if(boxId === 'hadirBox'){
+          const inapCard = document.getElementById('inapCard');
+          const costCard = document.getElementById('costCard');
+          if(inapCard) inapCard.style.display = isYa ? 'block' : 'none';
+          if(costCard) costCard.style.display = isYa ? 'block' : 'none';
+        }
       }
       calcCost();
     });
@@ -1003,6 +1009,26 @@ function calcCost(){
   document.getElementById('costAcco').textContent = 'RM '+accoCost;
   const total = paxCost+accoCost;
   document.getElementById('costTotal').textContent = 'RM '+total.toLocaleString('ms-MY',{minimumFractionDigits:2});
+
+  // Update pax note visibility & message
+  const jiaiHaji = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya';
+  const paxSel = document.querySelector('input[name=pax]:checked');
+  let n = 0;
+  if(paxSel) n = paxSel.value==='lain' ? (parseInt(document.getElementById('paxLainInput').value)||0) : parseInt(paxSel.value);
+  const noteEl = document.getElementById('paxNote');
+  if(noteEl) {
+    if (jiaiHaji) {
+      if (n >= 2) {
+        noteEl.style.display = 'block';
+        noteEl.textContent = 'RM 220/pax dikenakan untuk ahli keluarga tambahan (pax pertama percuma).';
+      } else {
+        noteEl.style.display = 'none';
+      }
+    } else {
+      noteEl.style.display = 'block';
+      noteEl.textContent = 'RM 220/pax — umur 12 tahun ke atas sahaja. Seat terhad.';
+    }
+  }
   
   const pCard = document.getElementById('pembayaranCard');
   if(pCard){
