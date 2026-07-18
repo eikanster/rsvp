@@ -44,11 +44,11 @@
   thead th{text-align:left;padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;color:var(--text-muted);background:var(--green-light);border-bottom:1px solid var(--border)}
   tbody td{padding:12px 16px;border-bottom:1px solid #f0ebe0}
   tbody tr:hover{background:var(--green-light)}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-  .badge-hadir{background:rgba(46,125,50,0.12);color:var(--success)}
-  .badge-tidak{background:rgba(198,40,40,0.1);color:var(--danger)}
-  .badge-paid{background:rgba(46,125,50,0.12);color:var(--success)}
-  .badge-pending{background:rgba(184,134,11,0.12);color:var(--gold)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;line-height:1;letter-spacing:0.1px}
+  .badge-hadir{background:rgba(46,125,50,0.08);color:var(--success);border:1px solid rgba(46,125,50,0.15)}
+  .badge-tidak{background:rgba(198,40,40,0.06);color:var(--danger);border:1px solid rgba(198,40,40,0.15)}
+  .badge-paid{background:rgba(46,125,50,0.08);color:var(--success);border:1px solid rgba(46,125,50,0.15)}
+  .badge-pending{background:rgba(184,134,11,0.08);color:var(--gold-dark);border:1px solid rgba(184,134,11,0.15)}
   .empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
   .empty .icon{font-size:48px;margin-bottom:12px}
   .panel{display:none}
@@ -72,6 +72,37 @@
   .upload-btn{padding:10px 14px;font-size:16px;line-height:1;min-width:unset}
   .upload-btn.uploading{opacity:0.5;pointer-events:none}
   @media(max-width:768px){.header{flex-direction:column;align-items:flex-start}.editor-grid{grid-template-columns:1fr}thead th,tbody td{padding:8px 10px}}
+
+  .nowrap { white-space: nowrap; }
+  .tabular { font-variant-numeric: tabular-nums; font-family: monospace, sans-serif; }
+
+  .btn-icon {
+    padding: 6px 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-icon:hover {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+  .btn-icon.btn-danger {
+    background: #fff;
+    color: var(--danger);
+    border-color: rgba(198,40,40,0.15);
+  }
+  .btn-icon.btn-danger:hover {
+    background: rgba(198,40,40,0.06);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
 
   /* Edit Modal styles */
   .modal-overlay {
@@ -309,17 +340,31 @@ function render(f){
   document.getElementById('statTotal').textContent=allData.length;document.getElementById('statHadir').textContent=hadir.length;document.getElementById('statPax').textContent=tp;document.getElementById('statRevenue').textContent='RM '+tr.toLocaleString('ms-MY',{minimumFractionDigits:2});
   if(!d.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="14" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
   document.getElementById('rsvpBody').innerHTML=d.map(r=>`<tr>
-    <td>${r.id}</td><td><strong>${esc(r.name)}</strong></td><td><a style="color:var(--green)" href="https://wa.me/6${esc(String(r.phone).replace(/[^0-9]/g,''))}">${esc(r.phone)}</a></td>
-    <td>${esc(r.haji_year||'-')}</td><td>${esc(r.address||'-')}</td>
-    <td><span class="badge ${r.jiai_haji==='ya'?'badge-hadir':'badge-tidak'}">${esc(r.jiai_haji==='ya'?'✅ Ya':'❌ Tidak')}</span></td>
-    <td><span class="badge ${r.attendance==='hadir'?'badge-hadir':'badge-tidak'}">${r.attendance==='hadir'?'✅ Hadir':'❌ Tidak'}</span></td>
-    <td>${r.pax||'-'}</td><td>${r.accommodation?'✅':'—'}</td><td>RM ${(r.amount||0).toLocaleString('ms-MY',{minimumFractionDigits:2})}</td>
-    <td>${r.receipt_url ? `<a href="${esc(r.receipt_url)}" target="_blank" style="color:var(--green);font-weight:600">📄 Resit</a>` : '—'}</td>
-    <td><span class="badge ${r.payment_status==='paid'||r.payment_status==='confirmed'?'badge-paid':'badge-pending'}">${r.payment_status==='paid'||r.payment_status==='confirmed'?'💳 Dibayar':'⏳ Belum'}</span></td>
-    <td>${r.timestamp?new Date(r.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td>
-    <td style="white-space:nowrap;">
-      <button class="btn" style="padding:4px 8px;margin-right:4px;" onclick="openEdit(${r.id})">✏️</button>
-      <button class="btn" style="padding:4px 8px;background:var(--danger);color:#fff;border-color:var(--danger);" onclick="deleteRsvp(${r.id})">🗑️</button>
+    <td class="tabular">${r.id}</td>
+    <td><strong>${esc(r.name)}</strong></td>
+    <td class="nowrap tabular">
+      <a style="color:var(--green); text-decoration:none; display:inline-flex; align-items:center; gap:4px;" href="https://wa.me/6${esc(String(r.phone).replace(/[^0-9]/g,''))}">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="color:#25d366;"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.453L0 24zm6.59-4.846c1.6.95 3.198 1.485 4.85 1.486 5.489 0 9.954-4.469 9.957-9.96.002-2.661-1.036-5.163-2.92-7.049C16.6 1.747 14.1 .708 11.455.708c-5.49 0-9.957 4.47-9.96 9.96-.001 1.814.478 3.588 1.39 5.176l-.991 3.616 3.702-.97.161.096zM17.15 14.39c-.28-.14-1.657-.82-1.913-.91-.256-.092-.44-.14-.627.14-.187.28-.72.91-.884 1.1-.162.18-.326.2-.607.06-2.8-.14-4.888-1.04-6.845-2.73-.51-.44-.816-.97-.936-1.18-.12-.21-.013-.33.093-.436.096-.095.21-.24.316-.36.104-.12.14-.2.21-.34.07-.14.035-.26-.017-.36-.053-.1-.44-1.06-.6-1.45-.157-.38-.315-.33-.43-.33h-.37c-.126 0-.33.047-.503.235-.173.188-.66.645-.66 1.57s.675 1.82.77 1.95c.096.13 1.33 2.03 3.223 2.85.45.195.8.31 1.07.397.45.143.86.12 1.18.07.36-.05 1.1-.45 1.25-.89.15-.44.15-.82.1-1-.05-.18-.19-.28-.47-.42z"/></svg>
+        ${esc(r.phone)}
+      </a>
+    </td>
+    <td class="nowrap">${esc(r.haji_year||'-')}</td>
+    <td>${esc(r.address||'-')}</td>
+    <td><span class="badge ${r.jiai_haji==='ya'?'badge-hadir':'badge-tidak'}">${r.jiai_haji==='ya'?'Ya':'Tidak'}</span></td>
+    <td><span class="badge ${r.attendance==='hadir'?'badge-hadir':'badge-tidak'}">${r.attendance==='hadir'?'Hadir':'Tidak Hadir'}</span></td>
+    <td class="tabular" style="text-align:center;">${r.pax||'-'}</td>
+    <td style="text-align:center;">${r.accommodation?'✅':'—'}</td>
+    <td class="nowrap tabular">RM ${(r.amount||0).toLocaleString('ms-MY',{minimumFractionDigits:2})}</td>
+    <td>${r.receipt_url ? `<a href="${esc(r.receipt_url)}" target="_blank" style="color:var(--green);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>Resit</a>` : '—'}</td>
+    <td><span class="badge ${r.payment_status==='paid'||r.payment_status==='confirmed'?'badge-paid':'badge-pending'}">${r.payment_status==='paid'||r.payment_status==='confirmed'?'Dibayar':'Belum Dibayar'}</span></td>
+    <td class="nowrap tabular">${r.timestamp?new Date(r.timestamp).toLocaleDateString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td>
+    <td class="nowrap" style="text-align:center;">
+      <button class="btn btn-icon" title="Edit" onclick="openEdit(${r.id})">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      </button>
+      <button class="btn btn-icon btn-danger" title="Padam" onclick="deleteRsvp(${r.id})">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+      </button>
     </td></tr>`).join('')
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
