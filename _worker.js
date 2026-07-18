@@ -33,6 +33,16 @@ export default {
       return handleUpdateReceipt(request, env, url, headers);
     }
 
+    // ─── Delete RSVP ──────────────────────────────
+    if (url.pathname === '/api/delete-rsvp') {
+      return handleDeleteRSVP(request, env, url, headers);
+    }
+
+    // ─── Update RSVP ──────────────────────────────
+    if (url.pathname === '/api/update-rsvp') {
+      return handleUpdateRSVP(request, env, url, headers);
+    }
+
     // ─── CHIP Webhook ────────────────────────────
     if (url.pathname === '/api/webhook') {
       return handleWebhook(request, env, headers);
@@ -317,6 +327,86 @@ async function handleUpdateReceipt(request, env, url, headers) {
       return json({ error: 'Failed to update receipt in database' }, 500, headers);
     }
 
+    return json({ ok: true }, 200, headers);
+  } catch (e) {
+    return json({ error: 'Database update error: ' + e.message }, 500, headers);
+  }
+}
+
+async function handleDeleteRSVP(request, env, url, headers) {
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+  try {
+    const body = await request.text();
+    const p = new URLSearchParams(body);
+    if (p.get('secret') !== 'rsvp2026') {
+      return json({ error: 'Unauthorized' }, 401, headers);
+    }
+    const id = parseInt(p.get('id'));
+    if (!id) {
+      return json({ error: 'Missing ID' }, 400, headers);
+    }
+
+    const { success } = await env.DB.prepare(
+      'DELETE FROM rsvp WHERE id = ?'
+    ).bind(id).run();
+
+    if (!success) {
+      return json({ error: 'Failed to delete RSVP' }, 500, headers);
+    }
+    return json({ ok: true }, 200, headers);
+  } catch (e) {
+    return json({ error: 'Database delete error: ' + e.message }, 500, headers);
+  }
+}
+
+async function handleUpdateRSVP(request, env, url, headers) {
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, headers);
+  }
+  try {
+    const body = await request.text();
+    const p = new URLSearchParams(body);
+    if (p.get('secret') !== 'rsvp2026') {
+      return json({ error: 'Unauthorized' }, 401, headers);
+    }
+    const id = parseInt(p.get('id'));
+    if (!id) {
+      return json({ error: 'Missing ID' }, 400, headers);
+    }
+
+    const name = p.get('name')?.trim();
+    const phone = p.get('phone')?.trim();
+    const haji_year = p.get('haji_year')?.trim() || '';
+    const address = p.get('address')?.trim() || '';
+    const jiai_haji = p.get('jiai_haji')?.trim() || 'tidak';
+    const attendance = p.get('attendance')?.trim() || 'tidak-hadir';
+    const pax = parseInt(p.get('pax')) || 0;
+    const accommodation = parseInt(p.get('accommodation')) || 0;
+    const amount = parseInt(p.get('amount')) || 0;
+    const payment_status = p.get('payment_status')?.trim() || 'free';
+    const receipt_url = p.get('receipt_url')?.trim() || null;
+
+    if (!name || !phone) {
+      return json({ error: 'Name and Phone are required' }, 400, headers);
+    }
+
+    const { success } = await env.DB.prepare(
+      `UPDATE rsvp SET 
+        name = ?, phone = ?, haji_year = ?, address = ?, jiai_haji = ?, 
+        attendance = ?, pax = ?, accommodation = ?, amount = ?, 
+        payment_status = ?, receipt_url = ? 
+       WHERE id = ?`
+    ).bind(
+      name, phone, haji_year, address, jiai_haji, 
+      attendance, pax, accommodation, amount, 
+      payment_status, receipt_url, id
+    ).run();
+
+    if (!success) {
+      return json({ error: 'Failed to update RSVP' }, 500, headers);
+    }
     return json({ ok: true }, 200, headers);
   } catch (e) {
     return json({ error: 'Database update error: ' + e.message }, 500, headers);
