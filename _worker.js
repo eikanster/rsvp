@@ -227,8 +227,10 @@ async function handleUpload(request, env, url, headers) {
     }
 
     // Validate
-    if (!file.type.startsWith('image/')) {
-      return json({ error: 'Only images allowed' }, 400, headers);
+    const isImage = file.type.startsWith('image/');
+    const isPdf = file.type === 'application/pdf';
+    if (!isImage && !isPdf) {
+      return json({ error: 'Only images and PDF allowed' }, 400, headers);
     }
     if (file.size > 10 * 1024 * 1024) {
       return json({ error: 'Max 10MB' }, 400, headers);
@@ -246,9 +248,33 @@ async function handleUpload(request, env, url, headers) {
   }
 
   // Fallback: raw binary upload
-  if (contentType.startsWith('image/')) {
-    const key = `rsvp/${category}/${Date.now()}.webp`;
-    await env.BUCKET.put(key, request.body, {
+  const isImage = contentType.startsWith('image/');
+  const isPdf = contentType === 'application/pdf';
+
+  if (isImage || isPdf) {
+    // Determine extension
+    let ext = 'bin';
+    if (isPdf) {
+      ext = 'pdf';
+    } else if (contentType.includes('png')) {
+      ext = 'png';
+    } else if (contentType.includes('jpeg') || contentType.includes('jpg')) {
+      ext = 'jpg';
+    } else if (contentType.includes('webp')) {
+      ext = 'webp';
+    } else if (contentType.includes('gif')) {
+      ext = 'gif';
+    }
+
+    const key = `rsvp/${category}/${Date.now()}.${ext}`;
+
+    // Read the body buffer to validate size
+    const bodyBuffer = await request.arrayBuffer();
+    if (bodyBuffer.byteLength > 10 * 1024 * 1024) {
+      return json({ error: 'Max 10MB' }, 400, headers);
+    }
+
+    await env.BUCKET.put(key, bodyBuffer, {
       httpMetadata: { contentType },
     });
 
@@ -256,7 +282,7 @@ async function handleUpload(request, env, url, headers) {
     return json({ ok: true, url: publicUrl, key }, 200, headers);
   }
 
-  return json({ error: 'Unsupported content type' }, 400, headers);
+  return json({ error: 'Unsupported content type: ' + contentType }, 400, headers);
 }
 
 // ═══════════════════════════════════════════════════
