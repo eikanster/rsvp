@@ -10,15 +10,15 @@
   :root {
     --ink: #f8fafc;
     --ink-dark: #0f172a;
-    --paper: #283F24;
-    --deep: #467235;
-    --deep-2: #1e331a;
+    --paper: #2a2012;
+    --deep: #a37d22;
+    --deep-2: #1f180c;
     --gold: #FFF78D;
     --gold-soft: #FFBF00;
     --line: rgba(255, 191, 0, 0.35);
-    --card-bg: rgba(40, 63, 36, 0.75);
+    --card-bg: rgba(42, 32, 18, 0.75);
     --danger: #f43f5e;
-    --ok: #467235;
+    --ok: #c59b27;
     --radius: 16px;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
@@ -29,7 +29,7 @@
     background-color: var(--paper);
     background-image: 
       radial-gradient(circle at 10% 20%, rgba(182, 134, 61, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+      radial-gradient(circle at 90% 80%, rgba(255, 191, 0, 0.05) 0%, transparent 40%);
     color: var(--ink);
     min-height: 100vh;
     padding-bottom: 120px;
@@ -45,7 +45,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, #FFBF00 0%, #b8860b 50%, #283F24 100%);
+    background: radial-gradient(circle at center, #FFBF00 0%, #b8860b 50%, var(--paper) 100%);
     padding: 30px 20px;
     text-align: center;
     transition: all 0.80s cubic-bezier(0.77, 0, 0.175, 1);
@@ -147,7 +147,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: rgba(40, 63, 36, 0.45);
+    background: rgba(42, 32, 18, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     border-radius: var(--radius);
@@ -611,6 +611,53 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  /* --- Sparkles Background --- */
+  .sparkles-container {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .sparkle-particle {
+    position: absolute;
+    color: var(--gold);
+    font-size: 16px;
+    opacity: 0;
+    pointer-events: none;
+    animation: sparkle-float 6s infinite ease-in-out;
+  }
+  @keyframes sparkle-float {
+    0% {
+      transform: translateY(100vh) translateX(0) scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.4;
+      transform: translateY(50vh) translateX(20px) scale(1) rotate(180deg);
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-10vh) translateX(-20px) scale(0) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* --- Glassmorphism Overrides --- */
+  .card, .cover-details {
+    background: rgba(42, 32, 18, 0.55) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 247, 141, 0.15) !important;
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    will-change: backdrop-filter;
+  }
 </style>
 <body>
 
@@ -796,7 +843,7 @@
       </div>
 
       <p style="font-size:13px;color:var(--gold);margin-bottom:12px;opacity:0.9;line-height:1.6;text-align:left;">
-        Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi di bawah atau hubungi WhatsApp kami.
+        Sila buat bayaran berjumlah <strong id="pay-amount-display">RM 0</strong> ke akaun CIMB berikut, kemudian lampirkan resit transaksi di bawah atau hubungi Admin kami jika terdapat sebarang masalah berkaitan pembayaran.
       </p>
       <div style="background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8;text-align:left;">
         <div><strong>Bank:</strong> <span id="bank-name-display">CIMB Bank</span></div>
@@ -820,10 +867,10 @@
     </div>
   </div>
 
-  <footer id="footer" style="text-align:center;padding:24px 0 16px;color:#8a8270;font-size:12px;line-height:2">
-    <div style="font-size:15px;font-weight:700;color:var(--deep)" id="footer-brand">Jay Ibrahim Al Islam</div>
-    <p id="footer-text">Terima kasih kerana sudi hadir</p>
-    <small>Pertanyaan: <strong id="contact-name">En. Ahmad</strong> — <a style="color:var(--deep)" id="contact-wa" href="#">WhatsApp</a></small>
+  <footer id="footer" style="text-align:center;padding:24px 0 16px;color:rgba(255,255,255,0.7);font-size:13px;line-height:2">
+    <div style="font-size:16px;font-weight:800;color:var(--gold)" id="footer-brand">Jay Ibrahim Al Islam</div>
+    <p id="footer-text" style="margin: 4px 0; font-weight: 500;">Terima kasih kerana sudi hadir</p>
+    <small style="font-size:12px;opacity:0.9;">Pertanyaan: <strong id="contact-name" style="color:#fff;">En. Ahmad</strong> — <a style="color:var(--gold);text-decoration:underline;font-weight:700;" id="contact-wa" href="#">WhatsApp</a></small>
   </footer>
 
 </main>
@@ -882,11 +929,11 @@ function applyConfig(){
     const bgUrl = cfg.background_url;
     const cov = document.getElementById('cover');
     if(cov){
-      cov.style.backgroundImage = `radial-gradient(circle at center, rgba(255, 191, 0, 0.45) 0%, rgba(40, 63, 36, 0.85) 60%, rgba(40, 63, 36, 0.95) 100%), url('${bgUrl}')`;
+      cov.style.backgroundImage = `radial-gradient(circle at center, rgba(255, 191, 0, 0.45) 0%, rgba(42, 32, 18, 0.85) 60%, rgba(42, 32, 18, 0.95) 100%), url('${bgUrl}')`;
       cov.style.backgroundSize = 'cover';
       cov.style.backgroundPosition = 'center';
     }
-    document.body.style.backgroundImage = `linear-gradient(rgba(40, 63, 36, 0.94), rgba(40, 63, 36, 0.95)), url('${bgUrl}')`;
+    document.body.style.backgroundImage = `linear-gradient(rgba(42, 32, 18, 0.94), rgba(42, 32, 18, 0.95)), url('${bgUrl}')`;
     document.body.style.backgroundAttachment = 'fixed';
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
@@ -1057,7 +1104,7 @@ function calcCost(){
     if (jiaiHaji) {
       if (n >= 2) {
         noteEl.style.display = 'block';
-        noteEl.textContent = 'RM 220/pax dikenakan untuk ahli keluarga tambahan (pax pertama percuma).';
+        noteEl.textContent = 'RM 220/pax dikenakan untuk ahli keluarga tambahan (Jemaah Haji JIAI adalah PERCUMA).';
       } else {
         noteEl.style.display = 'none';
       }
@@ -1105,7 +1152,10 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   if(hadir){
     rows.push(['Jemaah JIAI',jiaiHajiVal]);
     rows.push(['Bilangan pax',paxVal+' pax']);
-    if(paxNamesArr.length)rows.push(['Nama tambahan',paxNamesArr.join(', ')]);
+    const extraNamesArr = paxNamesArr.slice(1);
+    if(extraNamesArr.length) {
+      rows.push(['Nama tambahan', extraNamesArr.join(', ')]);
+    }
     rows.push(['Penginapan',inapYa?tempohVal:'Tidak']);
     rows.push(['Anggaran kos',totalCost]);
   }
@@ -1286,6 +1336,26 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
 
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 loadConfig();
+
+// --- DYNAMIC SPARKLES GENERATION ---
+(function initSparkles() {
+  const container = document.createElement('div');
+  container.className = 'sparkles-container';
+  document.body.appendChild(container);
+  
+  const glyphs = ['✦', '✨', '★', '•'];
+  const count = 25;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'sparkle-particle';
+    p.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.fontSize = (10 + Math.random() * 14) + 'px';
+    p.style.animationDelay = (Math.random() * 6) + 's';
+    p.style.animationDuration = (5 + Math.random() * 5) + 's';
+    container.appendChild(p);
+  }
+})();
 </script>
 </body>
 </html>
