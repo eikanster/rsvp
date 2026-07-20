@@ -419,6 +419,16 @@
     width: 24px;
     font-weight: 600;
   }
+  .pax-label-style {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    pointer-events: none !important;
+    padding: 14px 0 !important;
+    font-weight: 700 !important;
+    color: var(--gold-soft) !important;
+    box-shadow: none !important;
+  }
 
   .cost-line {
     display: flex;
@@ -1079,13 +1089,20 @@ document.getElementById('tempohLainInput').addEventListener('input', calcCost);
 // ─── DYNAMIC PAX NAMES ───
 const paxNamesBox = document.getElementById('paxNames');
 function renderPaxNames(n){
+  const existingNames = [...document.querySelectorAll('.paxNameInput')].map(i => i.value);
   paxNamesBox.innerHTML = '';
   const primaryName = document.getElementById('rsvp-name').value.trim();
   for(let i=1;i<=n;i++){
     const div = document.createElement('div');
     div.className = 'pax-name';
-    const val = (i === 1) ? primaryName : '';
-    div.innerHTML = '<span>'+i+'.</span><input type="text" class="paxNameInput" placeholder="Nama ahli '+i+'" value="'+esc(val)+'">';
+    let val = '';
+    if (i === 1) {
+      val = primaryName || existingNames[0] || '';
+      div.innerHTML = '<span>'+i+'.</span><input type="text" class="paxNameInput pax-label-style" readonly placeholder="Nama ahli '+i+'" value="'+esc(val)+'">';
+    } else {
+      val = existingNames[i-1] || '';
+      div.innerHTML = '<span>'+i+'.</span><input type="text" class="paxNameInput" placeholder="Nama ahli '+i+'" value="'+esc(val)+'">';
+    }
     paxNamesBox.appendChild(div);
   }
 }
@@ -1156,12 +1173,23 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   document.getElementById('errText').style.display='none';
 
   const hadir = document.querySelector('input[name=hadir]:checked').value==='hadir';
+  if(hadir){
+    const paxInputs = [...document.querySelectorAll('.paxNameInput')];
+    for(let i=1; i<paxInputs.length; i++){
+      if(!paxInputs[i].value.trim()){
+        alert('Sila masukkan nama untuk ahli ke-' + (i+1));
+        paxInputs[i].focus();
+        return;
+      }
+    }
+  }
+
   const hajiYearVal = document.querySelector('input[name=haji_year]:checked').value;
   const addressVal = document.getElementById('rsvp-address').value.trim();
   const jiaiHajiVal = document.querySelector('input[name=jiai_haji]:checked')?.value === 'ya' ? 'Ya' : 'Tidak';
   const paxSel = document.querySelector('input[name=pax]:checked');
   const paxVal = paxSel ? (paxSel.value==='lain'?document.getElementById('paxLainInput').value:paxSel.value) : '—';
-  const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value).filter(Boolean);
+  const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value);
   const inapYa = document.querySelector('input[name=inap]:checked').value==='ya';
   const tempohSel = document.querySelector('input[name=tempoh]:checked');
   const tempohVal = tempohSel ? (tempohSel.value==='lain'?document.getElementById('tempohLainInput').value:tempohSel.value) : '—';
@@ -1177,7 +1205,7 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   if(hadir){
     rows.push(['Jemaah JIAI',jiaiHajiVal]);
     rows.push(['Bilangan pax',paxVal+' pax']);
-    const extraNamesArr = paxNamesArr.slice(1);
+    const extraNamesArr = paxNamesArr.slice(1).filter(Boolean);
     if(extraNamesArr.length) {
       rows.push(['Nama tambahan', extraNamesArr.join(', ')]);
     }
@@ -1210,8 +1238,8 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   const billable = (jiai_haji === 'ya' && pax > 0) ? pax - 1 : pax;
   const amount = (billable*pricePax) + (malam*priceAcco);
   let msg = document.getElementById('rsvp-message').value.trim();
-  const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value).filter(Boolean);
-  const extraNamesArr = paxNamesArr.slice(1);
+  const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value);
+  const extraNamesArr = paxNamesArr.slice(1).filter(Boolean);
   if (extraNamesArr.length) {
     const extraNamesStr = "Ahli tambahan: " + extraNamesArr.join(', ');
     msg = msg ? (msg + "\n\n" + extraNamesStr) : extraNamesStr;
