@@ -265,6 +265,7 @@
       <div class="stat-card"><div class="num" id="statRevenue">-</div><div class="label">Revenue</div></div>
     </div>
     <div class="header-right" style="margin-bottom:14px">
+      <input type="text" id="adminSearch" placeholder="Cari nama, tel, alamat..." style="padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:13px; max-width:200px; outline:none;" oninput="onSearch()">
       <button class="btn active" id="filterAll" onclick="setFilter('all')">Semua</button>
       <button class="btn" id="filterHadir" onclick="setFilter('hadir')">✅ Hadir</button>
       <button class="btn" id="filterPaid" onclick="setFilter('paid')">💳 Dibayar</button>
@@ -379,8 +380,11 @@ async function refresh(){
   }catch(e){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="14" class="empty"><div class="icon">❌</div>Gagal</td></tr>'}
 }
 function setFilter(f){currentPage=1;currentFilter=f;['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');render(f)}
+function onSearch(){currentPage=1;render(currentFilter)}
 function render(f){
   let d=allData;if(f==='hadir')d=d.filter(r=>r.attendance==='hadir');if(f==='paid')d=d.filter(r=>r.payment_status==='paid'||r.payment_status==='confirmed');if(f==='pending')d=d.filter(r=>r.payment_status==='pending'||r.payment_status==='created');
+  const q=document.getElementById('adminSearch')?.value.trim().toLowerCase();
+  if(q){d=d.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.phone||'').toLowerCase().includes(q)||(r.address||'').toLowerCase().includes(q)||(r.message||'').toLowerCase().includes(q))}
   const hadir=allData.filter(r=>r.attendance==='hadir');const tp=hadir.reduce((s,r)=>s+(r.pax||0),0);const tr=allData.reduce((s,r)=>s+(r.amount||0),0);
   document.getElementById('statTotal').textContent=allData.length;document.getElementById('statHadir').textContent=hadir.length;document.getElementById('statPax').textContent=tp;document.getElementById('statRevenue').textContent='RM '+tr.toLocaleString('ms-MY',{minimumFractionDigits:2});
   if(!d.length){

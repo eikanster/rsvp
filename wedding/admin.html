@@ -135,6 +135,7 @@
       <div class="stat-card"><div class="num" id="statPax">-</div><div class="label">Pax</div></div>
     </div>
     <div class="header-right" style="margin-bottom:14px">
+      <input type="text" id="adminSearch" placeholder="Cari nama, tel..." style="padding:8px 12px; border-radius:10px; border:1px solid rgba(219,39,119,0.25); background:rgba(255,255,255,0.7); color:var(--text); font-size:13px; max-width:200px; outline:none;" oninput="onSearch()">
       <button class="btn active" id="filterAll" onclick="setFilter('all')">Semua</button>
       <button class="btn" id="filterHadir" onclick="setFilter('hadir')">✅ Hadir</button>
       <button class="btn" id="filterTidak" onclick="setFilter('tidak')">❌ Tidak</button>
@@ -282,10 +283,15 @@ function setFilter(f){
   render(f);
 }
 
+function onSearch(){render(currentFilter)}
 function render(filter){
   let data=allData;
   if(filter==='hadir')data=data.filter(d=>d.attendance==='hadir');
   if(filter==='tidak')data=data.filter(d=>d.attendance!=='hadir');
+  const q=document.getElementById('adminSearch')?.value.trim().toLowerCase();
+  if(q){
+    data=data.filter(d=>(d.name||'').toLowerCase().includes(q)||(d.phone||'').toLowerCase().includes(q)||(d.message||'').toLowerCase().includes(q));
+  }
   const hadir=allData.filter(d=>d.attendance==='hadir');
   const totalPax=hadir.reduce((s,d)=>s+(parseInt(d.pax)||0),0);
   document.getElementById('statTotal').textContent=allData.length;
