@@ -839,6 +839,7 @@
       <div class="summary-row" id="sum-address-row" style="display:none"><span class="slabel">Alamat</span><span class="svalue" id="sum-address">—</span></div>
       <div class="summary-row"><span class="slabel">Kehadiran</span><span class="svalue" id="sum-attendance">—</span></div>
       <div class="summary-row" id="sum-pax-row" style="display:none"><span class="slabel">Pax</span><span class="svalue" id="sum-pax">—</span></div>
+      <div class="summary-row" id="sum-members-row" style="display:none"><span class="slabel">Nama Ahli</span><span class="svalue" id="sum-members">—</span></div>
       <div class="summary-row" id="sum-acco-row" style="display:none"><span class="slabel">Penginapan</span><span class="svalue" id="sum-acco">—</span></div>
       <div class="summary-row" id="sum-amount-row" style="display:none"><span class="slabel">Jumlah</span><span class="svalue amount" id="sum-amount">—</span></div>
       <div class="summary-row" id="sum-msg-row" style="display:none"><span class="slabel">Nota</span><span class="svalue" id="sum-message">—</span></div>
@@ -1205,9 +1206,9 @@ document.getElementById('btnSubmit').addEventListener('click', ()=>{
   if(hadir){
     rows.push(['Jemaah JIAI',jiaiHajiVal]);
     rows.push(['Bilangan pax',paxVal+' pax']);
-    const extraNamesArr = paxNamesArr.slice(1).filter(Boolean);
-    if(extraNamesArr.length) {
-      rows.push(['Nama tambahan', extraNamesArr.join(', ')]);
+    const allNames = paxNamesArr.filter(Boolean);
+    if(allNames.length) {
+      rows.push(['Nama Ahli', allNames.join(', ')]);
     }
     rows.push(['Penginapan',inapYa?tempohVal:'Tidak']);
     rows.push(['Anggaran kos',totalCost]);
@@ -1275,6 +1276,11 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
       if(hadir){
         el=document.getElementById('sum-pax-row');if(el)el.style.display='flex';
         el=document.getElementById('sum-pax');if(el)el.textContent=pax+' orang';
+        const allNames = paxNamesArr.filter(Boolean);
+        if(allNames.length){
+          el=document.getElementById('sum-members-row');if(el)el.style.display='flex';
+          el=document.getElementById('sum-members');if(el)el.textContent=allNames.join(', ');
+        }
         if(malam>0){el=document.getElementById('sum-acco-row');if(el)el.style.display='flex';el=document.getElementById('sum-acco');if(el)el.textContent=malam+' malam (RM '+(malam*priceAcco)+')'}
         if(amount>0){el=document.getElementById('sum-amount-row');if(el)el.style.display='flex';el=document.getElementById('sum-amount');if(el)el.textContent='RM '+amount.toLocaleString('ms-MY',{minimumFractionDigits:2})}
       }
