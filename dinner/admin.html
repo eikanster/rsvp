@@ -369,9 +369,9 @@ function render(f){
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function exportCSV(){
-  const rows=[['ID','Nama','Telefon','Tahun Haji','Alamat','Jemaah JIAI','Kehadiran','Pax','Bilik','Jumlah','Resit URL','Status','Tarikh']];
-  allData.forEach(r=>rows.push([r.id,r.name,r.phone,r.haji_year,r.address,r.jiai_haji,r.attendance,r.pax,r.accommodation,r.amount,r.receipt_url,r.payment_status,r.timestamp]));
-  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const rows=[['ID','Nama','Telefon','Tahun Haji','Alamat','Jemaah JIAI','Kehadiran','Pax','Bilik','Jumlah','Resit URL','Status','Tarikh','Ucapan/Nota']];
+  allData.forEach(r=>rows.push([r.id,r.name,r.phone,r.haji_year,r.address,r.jiai_haji,r.attendance,r.pax,r.accommodation,r.amount,r.receipt_url,r.payment_status,r.timestamp,r.message]));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c||'').replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='dinner-rsvp.csv';a.click()
 }
 async function loadConfig(){try{const res=await fetch(API_CONFIG),j=await res.json();Object.entries(j.config||{}).forEach(([k,v])=>{const el=document.getElementById('cfg-'+k);if(el)el.value=v})}catch(e){}}
