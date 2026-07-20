@@ -387,6 +387,7 @@ async function handleUpdateRSVP(request, env, url, headers) {
     const amount = parseInt(p.get('amount')) || 0;
     const payment_status = p.get('payment_status')?.trim() || 'free';
     const receipt_url = p.get('receipt_url')?.trim() || null;
+    const message = p.get('message')?.trim() || '';
 
     if (!name || !phone) {
       return json({ error: 'Name and Phone are required' }, 400, headers);
@@ -396,12 +397,12 @@ async function handleUpdateRSVP(request, env, url, headers) {
       `UPDATE rsvp SET 
         name = ?, phone = ?, haji_year = ?, address = ?, jiai_haji = ?, 
         attendance = ?, pax = ?, accommodation = ?, amount = ?, 
-        payment_status = ?, receipt_url = ? 
+        payment_status = ?, receipt_url = ?, message = ? 
        WHERE id = ?`
     ).bind(
       name, phone, haji_year, address, jiai_haji, 
       attendance, pax, accommodation, amount, 
-      payment_status, receipt_url, id
+      payment_status, receipt_url, message, id
     ).run();
 
     if (!success) {
