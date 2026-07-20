@@ -1209,7 +1209,13 @@ document.getElementById('btnConfirm').addEventListener('click', async ()=>{
   const malam = inapYa&&tempohSel&&tempohSel.value!=='lain' ? (parseInt(tempohSel.dataset.malam)||0) : 0;
   const billable = (jiai_haji === 'ya' && pax > 0) ? pax - 1 : pax;
   const amount = (billable*pricePax) + (malam*priceAcco);
-  const msg = document.getElementById('rsvp-message').value.trim();
+  let msg = document.getElementById('rsvp-message').value.trim();
+  const paxNamesArr = [...document.querySelectorAll('.paxNameInput')].map(i=>i.value).filter(Boolean);
+  const extraNamesArr = paxNamesArr.slice(1);
+  if (extraNamesArr.length) {
+    const extraNamesStr = "Ahli tambahan: " + extraNamesArr.join(', ');
+    msg = msg ? (msg + "\n\n" + extraNamesStr) : extraNamesStr;
+  }
   const receipt_url = document.getElementById('rsvp-receipt-url').value;
 
   const btn = document.getElementById('btnConfirm');
