@@ -193,6 +193,43 @@
     gap: 10px;
     margin-top: 24px;
   }
+  .pagination-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 10px 4px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pagination-info {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .pagination-buttons {
+    display: flex;
+    gap: 6px;
+  }
+  .pagination-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pagination-btn:hover:not(:disabled) {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
@@ -240,6 +277,7 @@
         <tbody id="rsvpBody"><tr><td colspan="15" class="empty"><div class="icon">⏳</div>Memuatkan...</td></tr></tbody>
       </table>
     </div>
+    <div class="pagination-wrap" id="paginationWrap"></div>
   </div>
   <div class="panel" id="panel-editor">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -320,12 +358,13 @@
 const API_RSVP='/api/rsvp?category=dinner&secret=rsvp2026';
 const API_CONFIG='/api/config?category=dinner';
 const PASSWORD='rsvp2026';
-let allData=[],currentFilter='all';
+let allData=[],currentFilter='all',currentPage=1;
+const rowsPerPage=10;
 
 function unlock(){
   if(document.getElementById('password').value===PASSWORD){
     document.getElementById('lockScreen').style.display='none';document.getElementById('dashboard').style.display='block';
-    document.getElementById('errMsg').style.display='none';refresh();loadConfig()
+    document.getElementById('errMsg').style.display='none';currentPage=1;refresh();loadConfig()
   }else{document.getElementById('errMsg').style.display='block';document.getElementById('password').value=''}
 }
 function switchTab(t){
@@ -339,13 +378,25 @@ async function refresh(){
     render(currentFilter)
   }catch(e){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="14" class="empty"><div class="icon">❌</div>Gagal</td></tr>'}
 }
-function setFilter(f){currentFilter=f;['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');render(f)}
+function setFilter(f){currentPage=1;currentFilter=f;['all','hadir','paid','pending'].forEach(k=>document.getElementById('filter'+k.charAt(0).toUpperCase()+k.slice(1)).classList.remove('active'));document.getElementById('filter'+(f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1))).classList.add('active');render(f)}
 function render(f){
   let d=allData;if(f==='hadir')d=d.filter(r=>r.attendance==='hadir');if(f==='paid')d=d.filter(r=>r.payment_status==='paid'||r.payment_status==='confirmed');if(f==='pending')d=d.filter(r=>r.payment_status==='pending'||r.payment_status==='created');
   const hadir=allData.filter(r=>r.attendance==='hadir');const tp=hadir.reduce((s,r)=>s+(r.pax||0),0);const tr=allData.reduce((s,r)=>s+(r.amount||0),0);
   document.getElementById('statTotal').textContent=allData.length;document.getElementById('statHadir').textContent=hadir.length;document.getElementById('statPax').textContent=tp;document.getElementById('statRevenue').textContent='RM '+tr.toLocaleString('ms-MY',{minimumFractionDigits:2});
-  if(!d.length){document.getElementById('rsvpBody').innerHTML='<tr><td colspan="15" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';return}
-  document.getElementById('rsvpBody').innerHTML=d.map(r=>`<tr>
+  if(!d.length){
+    document.getElementById('rsvpBody').innerHTML='<tr><td colspan="15" class="empty"><div class="icon">📭</div>Tiada data</td></tr>';
+    document.getElementById('paginationWrap').innerHTML='';
+    return;
+  }
+  
+  const totalItems = d.length;
+  const totalPages = Math.ceil(totalItems / rowsPerPage);
+  if(currentPage>totalPages) currentPage=totalPages||1;
+  const start=(currentPage-1)*rowsPerPage;
+  const end=Math.min(start+rowsPerPage,totalItems);
+  const paged=d.slice(start,end);
+
+  document.getElementById('rsvpBody').innerHTML=paged.map(r=>`<tr>
     <td class="tabular">${r.id}</td>
     <td><strong>${esc(r.name)}</strong></td>
     <td class="nowrap tabular">
@@ -372,7 +423,22 @@ function render(f){
       <button class="btn btn-icon btn-danger" title="Padam" onclick="deleteRsvp(${r.id})">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
       </button>
-    </td></tr>`).join('')
+    </td></tr>`).join('');
+
+  document.getElementById('paginationWrap').innerHTML = `
+    <div class="pagination-info">Menunjukkan ${start+1}-${end} daripada ${totalItems} rekod</div>
+    <div class="pagination-buttons">
+      <button class="pagination-btn" onclick="goToPage(1)" ${currentPage===1?'disabled':''}>« First</button>
+      <button class="pagination-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ Prev</button>
+      <span style="font-size:13px;align-self:center;margin:0 4px;font-weight:600;color:var(--text-muted)">Halaman ${currentPage} / ${totalPages}</span>
+      <button class="pagination-btn" onclick="goToPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>Next ›</button>
+      <button class="pagination-btn" onclick="goToPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>Last »</button>
+    </div>
+  `;
+}
+function goToPage(p){
+  currentPage=p;
+  render(currentFilter);
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function exportCSV(){
